@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
         $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
+        $this->middleware('jwt.xauth', ['except' => ['login', 'register', 'refresh']]);
+        $this->middleware('jwt.verify', ['only' => ['refresh']]);
     }
 
     public function register(Request $request)
@@ -21,7 +24,17 @@ class AuthController extends Controller
             [
                 'name' => ['required', 'string', 'between:2,100'],
                 'email' => ['required', 'string', 'email', 'unique:users,email'],
-                'password' => ['required', 'string', 'min:8', 'confirmed']
+                'username' => ['required', 'regex:/^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/', 'unique:users,username'],
+                'password' => ['required', 'regex:/\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*/', 'confirmed']
+            ],
+            [
+                'username.regex' => 'Username must be at least 5 characters long, '
+                    . 'consists of alphanumeric characters (both lowercase or uppercase), '
+                    . 'allowed of the dot (.), underscore (_), and hyphen (-) '
+                    . 'does not appear consecutively, e.g., java..regex',
+                'password.regex' => 'Passwords must be at least 8 characters long, '
+                    . 'containing at least 1 lowercase letter, 1 uppercase letter, '
+                    . '1 number, and a special character (non-word characters)'
             ]
         );
 
@@ -48,11 +61,21 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $identity = $request->identity;
+        if (is_numeric($identity)) {
+            $field = 'phone_number';
+        } elseif (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
+            $field = 'email';
+        } else {
+            $field = 'username';
+        }
+        $request->merge([$field => $identity]);
+
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => ['required', 'email'],
-                'password' => ['required', 'min:8']
+                $field => ['required', 'string'],
+                'password' => ['required', 'string', 'min:8']
             ]
         );
 
@@ -63,7 +86,7 @@ class AuthController extends Controller
             ], 400);
         }
 
-        if (!$token = auth('api')->attempt($validator->validated())) {
+        if (!$token = auth('api')->claims(['xtype' => 'auth'])->attempt($validator->validated())) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized user login attempt'
@@ -94,7 +117,9 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        $access_token = auth('api')->claims(['xtype' => 'auth'])->refresh(true, true);
+        auth('api')->setToken($access_token);
+        return $this->respondWithToken($access_token);
     }
 
     protected function respondWithToken($token)
@@ -105,7 +130,15 @@ class AuthController extends Controller
             'data' => [
                 'token_type' => 'bearer',
                 'access_token' => $token,
-                'expires_in' => auth('api')->factory()->getTTL() * 60
+                'access_expires_in' => auth('api')->factory()->getTTL() * 60,
+                'refresh_token' => auth('api')
+                    ->claims([
+                        'xtype' => 'refresh',
+                        'xpair' => auth('api')->payload()->get('jti')
+                    ])
+                    ->setTTL(auth('api')->factory()->getTTL() * 3)
+                    ->tokenById(auth('api')->user()->id),
+                'refresh_expires_in' => auth('api')->factory()->getTTL() * 60
             ]
         ], 200);
     }
