@@ -19,6 +19,6 @@ class AlasanCuti extends Model
      * @var array
      */
     protected $fillable = [
-        'jenis_cuti_id', 'alasan', 'max_hari, 'status',
+        'jenis_cuti_id', 'alasan', 'max_hari', 'status',
     ];
 }
