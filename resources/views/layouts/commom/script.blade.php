@@ -1,8 +1,10 @@
-<script src="{{ asset('themes/js/main/axios.min.js') }}"></script>
+{{-- <script src="{{ asset('themes/js/main/axios.min.js') }}"></script> --}}
 <script src="{{ asset('themes/js/main/jquery.min.js') }}"></script>
 <script src="{{ asset('themes/js/main/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('themes/js/plugins/loaders/blockui.min.js') }}"></script>
 <script src="{{ asset('themes/js/plugins/notifications/pnotify.min.js') }}"></script>
+<script src="{{ asset('themes/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 
 @auth
 <script src="{{ asset('themes/js/plugins/ui/perfect_scrollbar.min.js') }}"></script>
@@ -31,8 +33,6 @@
         FixedSidebarCustomScroll.init();
     });
 </script>
-@endauth
-
 <script>
     axios.interceptors.request.use(
         (config) => {
@@ -59,6 +59,7 @@
 
                     try {
                         const rs = await refreshToken();
+                        console.log(rs)
                         const { access_token, refresh_token } = rs.data;
                         window.localStorage.setItem("acct", access_token);
                         window.localStorage.setItem("reft", refresh_token);
@@ -82,6 +83,10 @@
             return Promise.reject(err);
         }
     );
+</script>
+@endauth
+
+<script>
     function getAccT() {
         return window.localStorage.getItem("acct");
     }
@@ -89,7 +94,7 @@
         return window.localStorage.getItem("reft");
     }
     function refreshToken() {
-        return axios.post("/auth/token-refresh", {
+        return axios.post("/api/auth/token-refresh", {
             headers: {
                 'Authorization': `Bearer ${getRefT()}`
             },

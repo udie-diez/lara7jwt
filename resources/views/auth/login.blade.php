@@ -15,6 +15,8 @@
                         <span class="d-block text-muted">{{ __('Your credentials') }}</span>
                     </div>
 
+                    <div class="error"></div>
+
                     <div class="form-group form-group-feedback form-group-feedback-left">
                         <input type="text" class="form-control" id="email" name="email" placeholder="{{ __('Email address') }}" required>
                         <div class="form-control-feedback">
@@ -63,8 +65,47 @@
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
     <script>
+        const notiLoaderRedirect = function(target) {
+            var cur_value = 1,
+            progress;
+            // Make a loader.
+            var loader = new PNotify({
+                title: "Please wait redirecting...",
+                text: '<div class="progress" style="margin:0">\
+                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0">\
+                <span class="sr-only">0%</span>\
+                </div>\
+                </div>',
+                addclass: 'bg-primary border-primary',
+                icon: 'icon-spinner4 spinner',
+                hide: false,
+                buttons: {
+                    closer: false,
+                    sticker: false
+                },
+                before_open: function(PNotify) {
+                    progress = PNotify.get().find("div.progress-bar");
+                    progress.width(cur_value + "%").attr("aria-valuenow", cur_value).find("span").html(cur_value + "%");
+
+                    // Pretend to do something.
+                    var timer = setInterval(function() {
+                        if (cur_value >= 100) {
+
+                            // Remove the interval.
+                            window.clearInterval(timer);
+                            loader.remove();
+                            window.location.href = target;
+                            return;
+                        }
+                        cur_value += 1;
+                        progress.width(cur_value + "%").attr("aria-valuenow", cur_value).find("span").html(cur_value + "%");
+                    }, 65);
+                }
+            });
+        }
         const login = async function () {
             event.preventDefault();
+            $('.error').html('');
             const spinner = `Loading... <i class="icon-spinner2 spinner ml-2"></i>`;
             const btnLoginEl = $('.login-form button').html();
             $('.login-form button').prop('disabled', true).html(spinner);
@@ -73,11 +114,10 @@
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
                 const resp = await axios.post('/api/auth/login', json);
-                console.log(resp);
+                $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 window.localStorage.setItem("acct", resp.data.data.access_token);
                 window.localStorage.setItem("reft", resp.data.data.refresh_token);
-                $('.login-form button').prop('disabled', false).html(btnLoginEl);
-                setTimeout(window.location.href = '/', 3000);
+                notiLoaderRedirect('/');
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 // get response with a status code not in range 2xx
@@ -85,14 +125,20 @@
                     console.log(err.response.data);
                     console.log(err.response.status);
                     console.log(err.response.headers);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
+                    $('.error').html(message);
                 }
                 // no response
                 else if (err.request) {
                     console.log(err.request);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.request}</span>`;
+                    $('.error').html(message);
                 }
                 // Something wrong in setting up the request
                 else {
                     console.log('Error', err.message);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.message}</span>`;
+                    $('.error').html(message);
                 }
                 console.log(err.config);
             }
