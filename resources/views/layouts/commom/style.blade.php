@@ -5,5 +5,6 @@
 <link href="{{ asset('themes/css/layout.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('themes/css/components.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('themes/css/colors.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
 
 @yield('styles')

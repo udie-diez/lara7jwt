@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiClientController as ApiClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -11,8 +12,8 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.verify', ['except' => ['login', 'showLoginform']]);
-        $this->middleware('jwt.xauth', ['except' => ['login', 'showLoginform', 'refresh']]);
+        $this->middleware('jwt.verify', ['except' => ['login', 'showLoginform', 'loginSubmit']]);
+        $this->middleware('jwt.xauth', ['except' => ['login', 'showLoginform', 'loginSubmit', 'refresh']]);
         $this->middleware('jwt.verify', ['only' => ['refresh']]);
     }
 
@@ -24,6 +25,16 @@ class LoginController extends Controller
     public function showLoginform()
     {
         return view('auth.login');
+    }
+
+    /**
+     * Submit the login form
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function loginSubmit(Request $request)
+    {
     }
 
     /**

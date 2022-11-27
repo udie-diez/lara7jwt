@@ -65,48 +65,9 @@
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
     <script>
-        const notiLoaderRedirect = function(target) {
-            var cur_value = 1,
-            progress;
-            // Make a loader.
-            var loader = new PNotify({
-                title: "Please wait redirecting...",
-                text: '<div class="progress" style="margin:0">\
-                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0">\
-                <span class="sr-only">0%</span>\
-                </div>\
-                </div>',
-                addclass: 'bg-primary border-primary',
-                icon: 'icon-spinner4 spinner',
-                hide: false,
-                buttons: {
-                    closer: false,
-                    sticker: false
-                },
-                before_open: function(PNotify) {
-                    progress = PNotify.get().find("div.progress-bar");
-                    progress.width(cur_value + "%").attr("aria-valuenow", cur_value).find("span").html(cur_value + "%");
-
-                    // Pretend to do something.
-                    var timer = setInterval(function() {
-                        if (cur_value >= 100) {
-
-                            // Remove the interval.
-                            window.clearInterval(timer);
-                            loader.remove();
-                            window.location.href = target;
-                            return;
-                        }
-                        cur_value += 1;
-                        progress.width(cur_value + "%").attr("aria-valuenow", cur_value).find("span").html(cur_value + "%");
-                    }, 65);
-                }
-            });
-        }
         const login = async function () {
             event.preventDefault();
             $('.error').html('');
-            const spinner = `Loading... <i class="icon-spinner2 spinner ml-2"></i>`;
             const btnLoginEl = $('.login-form button').html();
             $('.login-form button').prop('disabled', true).html(spinner);
 
@@ -117,7 +78,7 @@
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 window.localStorage.setItem("acct", resp.data.data.access_token);
                 window.localStorage.setItem("reft", resp.data.data.refresh_token);
-                notiLoaderRedirect('/');
+                noti.showProgressRedirect('/');
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 // get response with a status code not in range 2xx
@@ -125,8 +86,35 @@
                     console.log(err.response.data);
                     console.log(err.response.status);
                     console.log(err.response.headers);
-                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
-                    $('.error').html(message);
+                    if (typeof err.response.data.message === 'string') {
+                        const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
+                        $('.error').html(message);
+                        return;
+                    }
+                    if (typeof err.response.data.message === 'object') {
+                        if ($('#email-error').length === 0) {
+                            if (err.response.data.message.email) {
+                                const message = `<label id="email-error" class="validation-invalid-label" for="email">${err.response.data.message.email[0]}</label>`;
+                                const parent = $('#email').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.email) {
+                                $('#email-error').show().html(err.response.data.message.email[0]);
+                            }
+                        }
+                        if ($('#password-error').length === 0) {
+                            if (err.response.data.message.password) {
+                                const message = `<label id="password-error" class="validation-invalid-label" for="password">${err.response.data.message.password[0]}</label>`;
+                                const parent = $('#password').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.password) {
+                                $('#password-error').show().html(err.response.data.message.password[0]);
+                            }
+                        }
+                    }
                 }
                 // no response
                 else if (err.request) {

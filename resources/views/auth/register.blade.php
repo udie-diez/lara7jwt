@@ -15,6 +15,8 @@
                         <span class="d-block text-muted">{{ __('All fields are required') }}</span>
                     </div>
 
+                    <div class="error"></div>
+
                     <div class="form-group text-center text-muted content-divider">
                         <span class="px-2">{{ __('Your credentials') }}</span>
                     </div>
@@ -71,7 +73,7 @@
     <script>
         const register = async function () {
             event.preventDefault();
-            const spinner = `Loading... <i class="icon-spinner2 spinner ml-2"></i>`;
+            $('.error').html('');
             const btnRegisterEl = $('.login-form button').html();
             $('.login-form button').prop('disabled', true).html(spinner);
 
@@ -79,9 +81,8 @@
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
                 const resp = await axios.post('/api/auth/register', json);
-                console.log(resp)
                 $('.login-form button').prop('disabled', false).html(btnRegisterEl);
-                setTimeout(window.location.href = '/auth/login', 3000);
+                noti.showProgressRedirect('/auth/login');
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnRegisterEl);
                 // get response with a status code not in range 2xx
@@ -89,14 +90,69 @@
                     console.log(err.response.data);
                     console.log(err.response.status);
                     console.log(err.response.headers);
+                    if (typeof err.response.data.message === 'string') {
+                        const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
+                        $('.error').html(message);
+                        return;
+                    }
+                    if (typeof err.response.data.message === 'object') {
+                        if ($('#email-error').length === 0) {
+                            if (err.response.data.message.email) {
+                                const message = `<label id="email-error" class="validation-invalid-label" for="email">${err.response.data.message.email[0]}</label>`;
+                                const parent = $('#email').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.email) {
+                                $('#email-error').show().html(err.response.data.message.email[0]);
+                            }
+                        }
+                        if ($('#password-error').length === 0) {
+                            if (err.response.data.message.password) {
+                                const message = `<label id="password-error" class="validation-invalid-label" for="password">${err.response.data.message.password[0]}</label>`;
+                                const parent = $('#password').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.password) {
+                                $('#password-error').show().html(err.response.data.message.password[0]);
+                            }
+                        }
+                        if ($('#password_confirmation-error').length === 0) {
+                            if (err.response.data.message.password_confirmation) {
+                                const message = `<label id="password_confirmation-error" class="validation-invalid-label" for="password_confirmation">${err.response.data.message.password_confirmation[0]}</label>`;
+                                const parent = $('#password_confirmation').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.password_confirmation) {
+                                $('#password_confirmation-error').show().html(err.response.data.message.password_confirmation[0]);
+                            }
+                        }
+                        if ($('#name-error').length === 0) {
+                            if (err.response.data.message.name) {
+                                const message = `<label id="name-error" class="validation-invalid-label" for="name">${err.response.data.message.name[0]}</label>`;
+                                const parent = $('#name').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.name) {
+                                $('#name-error').show().html(err.response.data.message.name[0]);
+                            }
+                        }
+                    }
                 }
                 // no response
                 else if (err.request) {
                     console.log(err.request);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.request}</span>`;
+                    $('.error').html(message);
                 }
                 // Something wrong in setting up the request
                 else {
                     console.log('Error', err.message);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.message}</span>`;
+                    $('.error').html(message);
                 }
                 console.log(err.config);
             }

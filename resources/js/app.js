@@ -1,3 +1,5 @@
 require('./bootstrap');
+require('./utils/spinner');
 require('./utils/convertFormToJSON');
-require('./utils/notiLoaderRedirect');
+require('./utils/noti');
+require('./utils/sweetConfirm');

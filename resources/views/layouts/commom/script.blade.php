@@ -1,4 +1,3 @@
-{{-- <script src="{{ asset('themes/js/main/axios.min.js') }}"></script> --}}
 <script src="{{ asset('themes/js/main/jquery.min.js') }}"></script>
 <script src="{{ asset('themes/js/main/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('themes/js/plugins/loaders/blockui.min.js') }}"></script>
@@ -99,14 +98,6 @@
                 'Authorization': `Bearer ${getRefT()}`
             },
         });
-    }
-    function convertFormToJSON(form) {
-        return $(form)
-            .serializeArray()
-            .reduce(function (json, { name, value }) {
-                json[name] = value;
-                return json;
-            }, {});
     }
 </script>
 <script src="{{ asset('themes/js/app.js') }}"></script>

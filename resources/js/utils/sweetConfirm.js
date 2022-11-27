@@ -1,4 +1,4 @@
-window.swalConfirm = function () {
+window.sweetConfirm = function (onConfirmFn, onCancelFn) {
     if (typeof swal == 'undefined') {
         console.warn('Warning - sweet_alert.min.js is not loaded.');
         return;
@@ -11,15 +11,15 @@ window.swalConfirm = function () {
     });
     var _onConfirm = function () {
         swalInit.fire(
-            'Deleted!',
-            'Your file has been deleted.',
+            // 'Deleted!',
+            'The action is being process',
             'success'
         );
     }
     var _onCancel = function () {
         swalInit.fire(
-            'Cancelled',
-            'Your imaginary file is safe :)',
+            // 'Cancelled',
+            'The action was cancelled',
             'error'
         );
     }
@@ -30,23 +30,17 @@ window.swalConfirm = function () {
         showCancelButton: true,
         confirmButtonText: 'Yes, delete it!',
         cancelButtonText: 'No, cancel!',
-        confirmButtonClass: 'btn btn-success',
-        cancelButtonClass: 'btn btn-danger',
+        // confirmButtonClass: 'btn btn-success',
+        // cancelButtonClass: 'btn btn-danger',
         buttonsStyling: false
     }).then(function (result) {
         if (result.value) {
             _onConfirm();
+            onConfirmFn;
         }
         else if (result.dismiss === swal.DismissReason.cancel) {
             _onCancel();
+            onCancelFn;
         }
     });
-    return {
-        onConfirm: function () {
-            _onConfirm();
-        },
-        onCancel: function () {
-            _onCancel();
-        }
-    }
 }();

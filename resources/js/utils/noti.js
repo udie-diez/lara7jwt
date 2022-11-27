@@ -1,47 +1,38 @@
-window.notiLoaderRedirect = function (target) {
+window.noti = function () {
     if (typeof PNotify == 'undefined') {
         console.warn('Warning - pnotify.min.js is not loaded.');
         return;
     }
-    var cur_value = 1,
-        progress;
-    // Make a loader.
-    var loader = new PNotify({
-        title: "Please wait redirecting...",
-        text: '<div class="progress" style="margin:0">\
-                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0">\
-                <span class="sr-only">0%</span>\
-                </div>\
-                </div>',
-        addclass: 'bg-primary border-primary',
-        icon: 'icon-spinner4 spinner',
-        hide: false,
-        buttons: {
-            closer: false,
-            sticker: false
-        },
-        before_open: function (PNotify) {
-            progress = PNotify.get().find("div.progress-bar");
-            progress.width(cur_value + "%").attr("aria-valuenow", cur_value).find("span").html(cur_value + "%");
-
-            // Pretend to do something.
-            var timer = setInterval(function () {
-                if (cur_value >= 100) {
-
-                    // Remove the interval.
-                    window.clearInterval(timer);
-                    loader.remove();
-                    window.location.href = target;
-                    return;
-                }
-                cur_value += 1;
-                progress.width(cur_value + "%").attr("aria-valuenow", cur_value).find("span").html(cur_value + "%");
-            }, 65);
+    var _show = function (options) {
+        position = options.icon_position ? options.icon_position : 'left';
+        arrow = options.with_arrow === true ? `alert-arrow-${position}` : ``;
+        switch (options.type) {
+            case 'primary':
+            case 'info':
+                icon = 'icon-info22';
+                break;
+            case 'danger':
+                icon = 'icon-blocked';
+                break;
+            case 'success':
+                icon = 'icon-checkmark3';
+                break;
+            case 'warning':
+                icon = 'icon-warning22';
+                break;
+            default:
+                icon = 'icon-info22';
+                break;
         }
-    });
-}
-window.noti = function () {
-    var _loaderRedirect = function (target) {
+        new PNotify({
+            title: options.title ?? 'Info notice',
+            text: options.text ?? 'Check me out! I\'m a notice.',
+            icon: options.icon ?? icon,
+            type: options.type ?? 'info', // primary, danger, success, warning, info
+            addclass: `alert ${position} ${arrow}`,
+        });
+    }
+    var _showProgressRedirect = function (target) {
         var cur_value = 1,
             progress;
         // Make a loader.
@@ -78,7 +69,7 @@ window.noti = function () {
             }
         });
     }
-    var _loaderRedirectDynamic = function (target) {
+    var _showProgressRedirectDynamic = function (target) {
         var percent = 0;
         var notice = new PNotify({
             text: "Please wait",
@@ -123,20 +114,14 @@ window.noti = function () {
         }, 2000);
     }
     return {
-        default: function (options) {
-            new PNotify({
-                title: options.title ?? 'Info notice',
-                text: options.text ?? 'Check me out! I\'m a notice.',
-                icon: options.icon ?? 'icon-info22',
-                type: options.type ?? 'info',
-                addclass: 'alert alert-styled-left alert-arrow-left',
-            });
+        show: function (options) {
+            _show(options);
         },
-        loaderRedirect: function (target) {
-            _loaderRedirect(target);
+        showProgressRedirect: function (target) {
+            _showProgressRedirect(target);
         },
-        loaderRedirectDynamic: function (target) {
-            _loaderRedirectDynamic(target);
+        showProgressRedirectDynamic: function (target) {
+            _showProgressRedirectDynamic(target);
         }
     }
 }();

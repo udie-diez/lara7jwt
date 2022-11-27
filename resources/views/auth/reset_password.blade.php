@@ -16,6 +16,8 @@
                         <span class="d-block text-muted">{{ __("One more step to gain your access") }}</span>
                     </div>
 
+                    <div class="error"></div>
+
                     <div class="form-group form-group-feedback form-group-feedback-left">
                         <input type="text" class="form-control" id="email" name="email" placeholder="{{ __('Email address') }}" required>
                         <div class="form-control-feedback">
@@ -57,7 +59,7 @@
     <script>
         const recovery = async function () {
             event.preventDefault();
-            const spinner = `Loading... <i class="icon-spinner2 spinner ml-2"></i>`;
+            $('.error').html('');
             const btnResetEl = $('.login-form button').html();
             $('.login-form button').prop('disabled', true).html(spinner);
 
@@ -65,9 +67,8 @@
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
                 const resp = await axios.post('/api/auth/reset-password', json);
-                console.log(resp);
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
-                setTimeout(window.location.href = '/auth/login', 3000);
+                noti.showProgressRedirect('/auth/login');
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
                 // get response with a status code not in range 2xx
@@ -75,14 +76,58 @@
                     console.log(err.response.data);
                     console.log(err.response.status);
                     console.log(err.response.headers);
+                    if (typeof err.response.data.message === 'string') {
+                        const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
+                        $('.error').html(message);
+                        return;
+                    }
+                    if (typeof err.response.data.message === 'object') {
+                        if ($('#email-error').length === 0) {
+                            if (err.response.data.message.email) {
+                                const message = `<label id="email-error" class="validation-invalid-label" for="email">${err.response.data.message.email[0]}</label>`;
+                                const parent = $('#email').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.email) {
+                                $('#email-error').show().html(err.response.data.message.email[0]);
+                            }
+                        }
+                        if ($('#password-error').length === 0) {
+                            if (err.response.data.message.password) {
+                                const message = `<label id="password-error" class="validation-invalid-label" for="password">${err.response.data.message.password[0]}</label>`;
+                                const parent = $('#password').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.password) {
+                                $('#password-error').show().html(err.response.data.message.password[0]);
+                            }
+                        }
+                        if ($('#password_confirmation-error').length === 0) {
+                            if (err.response.data.message.password_confirmation) {
+                                const message = `<label id="password_confirmation-error" class="validation-invalid-label" for="password_confirmation">${err.response.data.message.password_confirmation[0]}</label>`;
+                                const parent = $('#password_confirmation').parent();
+                                parent.append(message);
+                            }
+                        } else {
+                            if (err.response.data.message.password_confirmation) {
+                                $('#password_confirmation-error').show().html(err.response.data.message.password_confirmation[0]);
+                            }
+                        }
+                    }
                 }
                 // no response
                 else if (err.request) {
                     console.log(err.request);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.request}</span>`;
+                    $('.error').html(message);
                 }
                 // Something wrong in setting up the request
                 else {
                     console.log('Error', err.message);
+                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.message}</span>`;
+                    $('.error').html(message);
                 }
                 console.log(err.config);
             }

@@ -25,10 +25,7 @@ Route::group([
     // Route::post('register', 'Auth\RegisterController@register')->name('register.post');
 
     Route::get('login', 'Auth\LoginController@showLoginform')->name('login');
-    // Route::post('login', 'Auth\LoginController@login')->name('login.post');
-    // Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-    // Route::post('refresh', 'Auth\LoginController@refresh')->name('token.refresh');
-    // Route::get('me', 'Auth\LoginController@me')->name('me');
+    Route::post('login', 'Auth\LoginController@loginSubmit');
 
     Route::get('forgot-password', 'Auth\PasswordResetController@showForgotForm')->name('forgot');
     // Route::post('forgot-password', 'Auth\PasswordResetController@sendForgotLink')->name('forgot.sendLink');
