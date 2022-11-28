@@ -19,9 +19,9 @@
     {{-- Page content --}}
     <div class="page-content">
 
-        @auth
+        @if(Auth::guard('api')->check())
             @include('layouts.partials.sidebar.main')
-        @endauth
+        @endif
 
         {{-- Main content --}}
         <div class="content-wrapper">

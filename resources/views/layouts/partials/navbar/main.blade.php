@@ -6,7 +6,7 @@
         </a>
     </div>
 
-    @auth
+    @auth('api')
     <div class="d-md-none">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
             <i class="icon-tree5"></i>
@@ -18,7 +18,7 @@
     @endauth
 
     <div class="collapse navbar-collapse" id="navbar-mobile">
-        @auth
+        @auth('api')
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a href="#" class="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
@@ -32,7 +32,7 @@
         <span class="ml-md-3 mr-md-auto">{{ __('Welcome, Guest') }}</span>
         @endguest
 
-        @auth
+        @auth('api')
         <span class="ml-md-3 mr-md-auto">{{ __('Welcome') }}, {{ Auth::user()->name }}</span>
 
         <ul class="navbar-nav">

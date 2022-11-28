@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Validator;
 
 class JenisCutiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('jwt.verify', ['except' => ['index']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -31,9 +36,21 @@ class JenisCutiController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
-                $btn = '<button type="button" class="btn btn-primary rounded-round" data-rowid="' . $row->id . '" ><i class="icon-pencil7 mr-2"></i> Edit</button>';
-                $btn .= '<button type="button" class="btn btn-danger rounded-round" data-rowid="' . $row->id . '" ><i class="icon-cross3 mr-2"></i> Delete</button>';
-                return $btn;
+                $buttons = '<div class="text-center">
+                    <div class="list-icons">
+                        <div class="dropdown">
+                            <a href="#" class="list-icons-item" data-toggle="dropdown">
+                                <i class="icon-menu9"></i>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="#" class="dropdown-item action-edit" data-rowid="' . $row->id . '"><i class="icon-pencil7"></i> Edit</a>
+                                <a href="#" class="dropdown-item action-delete" data-rowid="' . $row->id . '"><i class="icon-cross3"></i> Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+                return $buttons;
             })
             ->rawColumns(['action'])
             ->toJson();

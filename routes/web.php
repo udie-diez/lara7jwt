@@ -22,18 +22,13 @@ Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::get('register', 'Auth\RegisterController@showRegisterForm')->name('register');
-    // Route::post('register', 'Auth\RegisterController@register')->name('register.post');
-
     Route::get('login', 'Auth\LoginController@showLoginform')->name('login');
-    Route::post('login', 'Auth\LoginController@loginSubmit');
-
     Route::get('forgot-password', 'Auth\PasswordResetController@showForgotForm')->name('forgot');
-    // Route::post('forgot-password', 'Auth\PasswordResetController@sendForgotLink')->name('forgot.sendLink');
     Route::get('reset-password/{token}', 'Auth\PasswordResetController@showResetForm')->name('reset');
-    // Route::post('reset-password', 'Auth\PasswordResetController@reset')->name('reset.post');
 });
 
 Route::group([
+    'middleware' => 'auth:api',
     'prefix' => 'master-data'
 ], function () {
     Route::get('banner', 'BannerController@index')->name('banner');

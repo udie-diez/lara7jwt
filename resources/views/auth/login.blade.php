@@ -78,7 +78,7 @@
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 window.localStorage.setItem("acct", resp.data.data.access_token);
                 window.localStorage.setItem("reft", resp.data.data.refresh_token);
-                noti.showProgressRedirect('/');
+                noti.showProgressRedirect("{{ route('banner') }}");
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 // get response with a status code not in range 2xx
