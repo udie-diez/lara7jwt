@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlasanPresensi;
+use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,17 +16,27 @@ class AlasanPresensiController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.master_data.alasan_presensi');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Get all list data
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function list(Request  $request)
     {
-        //
+        $data = AlasanPresensi::all();
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $btn = '<button type="button" class="btn btn-primary rounded-round" data-rowid="' . $row->id . '" ><i class="icon-pencil7 mr-2"></i> Edit</button>';
+                $btn .= '<button type="button" class="btn btn-danger rounded-round" data-rowid="' . $row->id . '" ><i class="icon-cross3 mr-2"></i> Delete</button>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 
     /**
@@ -35,7 +47,31 @@ class AlasanPresensiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'alasan' => ['required', 'string'],
+                'status' => ['required', 'string', 'in:aktif,tidak']
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        $alasanPresensi = AlasanPresensi::create([
+            'alasan' => $request->alasan,
+            'status' => $request->status,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil disimpan',
+            'data' => ['alasan_presensi' => $alasanPresensi]
+        ], 201);
     }
 
     /**
@@ -46,18 +82,20 @@ class AlasanPresensiController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $alasanPresensi = AlasanPresensi::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        if (!$alasanPresensi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Alasan presensi tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil ditemukan',
+            'data' => ['alasan_presensi' => $alasanPresensi]
+        ], 200);
     }
 
     /**
@@ -69,7 +107,40 @@ class AlasanPresensiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $alasanPresensi = AlasanPresensi::findOrFail($id);
+
+        if (!$alasanPresensi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Alasan presensi tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'alasan' => ['required', 'string'],
+                'status' => ['required', 'string', 'in:aktif,tidak']
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        $alasanPresensi->update([
+            'alasan' => $request->alasan,
+            'status' => $request->status,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil diperbarui',
+            'data' => ['alasan_presensi' => $alasanPresensi]
+        ], 200);
     }
 
     /**
@@ -80,6 +151,21 @@ class AlasanPresensiController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $alasanPresensi = AlasanPresensi::findOrFail($id);
+
+        if (!$alasanPresensi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Alasan presensi tidak ditemukan'
+            ], 404);
+        }
+
+        $alasanPresensi->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil dihapus',
+            'data' => ['alasan_presensi' => $alasanPresensi]
+        ], 200);
     }
 }

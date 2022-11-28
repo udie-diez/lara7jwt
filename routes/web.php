@@ -32,3 +32,11 @@ Route::group([
     Route::get('reset-password/{token}', 'Auth\PasswordResetController@showResetForm')->name('reset');
     // Route::post('reset-password', 'Auth\PasswordResetController@reset')->name('reset.post');
 });
+
+Route::group([
+    'prefix' => 'master-data'
+], function () {
+    Route::get('banner', 'BannerController@index')->name('banner');
+    Route::get('jenis-cuti', 'JenisCutiController@index')->name('jenisCuti');
+    Route::get('alasan-presensi', 'AlasanPresensiController@index')->name('alasanPresensi');
+});
