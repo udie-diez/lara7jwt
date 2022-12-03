@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::group([
-    'middleware' => 'api',
+    'middleware' => 'web',
     'prefix' => 'auth'
 ], function () {
     Route::get('register', 'Auth\RegisterController@showRegisterForm')->name('register');

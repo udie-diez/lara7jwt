@@ -25,7 +25,7 @@ window.noti = function () {
                 break;
         }
         new PNotify({
-            title: options.title ?? 'Info notice',
+            title: options.title ?? 'Info',
             text: options.text ?? 'Check me out! I\'m a notice.',
             icon: options.icon ?? icon,
             type: options.type ?? 'info', // primary, danger, success, warning, info

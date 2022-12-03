@@ -6,7 +6,7 @@
         </a>
     </div>
 
-    @if(session('users'))
+    @if(Session::has('users'))
     <div class="d-md-none">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
             <i class="icon-tree5"></i>
@@ -18,7 +18,7 @@
     @endif
 
     <div class="collapse navbar-collapse" id="navbar-mobile">
-        @if(session('users'))
+        @if(Session::has('users'))
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a href="#" class="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
@@ -26,7 +26,7 @@
                 </a>
             </li>
         </ul>
-        <span class="ml-md-3 mr-md-auto">{{ __('Welcome') }}, {{ session('users')['name'] }}</span>
+        <span class="ml-md-3 mr-md-auto">{{ __('Welcome') }}, {{ Session::get('users')['name'] }}</span>
 
         <ul class="navbar-nav">
             <li class="nav-item dropdown">

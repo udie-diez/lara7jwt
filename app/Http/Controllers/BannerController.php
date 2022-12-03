@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,6 +14,9 @@ class BannerController extends Controller
     public function __construct()
     {
         $this->middleware('jwt.verify', ['except' => ['index']]);
+        if (!Session::has('users')) {
+            redirect()->route('login');
+        }
     }
 
     /**
@@ -73,28 +77,18 @@ class BannerController extends Controller
         $data = Banner::all();
         return DataTables::of($data)
             ->addIndexColumn()
-            ->editColumn('gambar', function (Banner $banner) {
-                $path = Storage::url($banner->gambar);
-                return !$banner->gambar ? null : '<img src="' . url($path) . '">';
-            })
             ->addColumn('action', function ($row) {
                 $buttons = '<div class="text-center">
-                    <div class="list-icons">
-                        <div class="dropdown">
-                            <a href="#" class="list-icons-item" data-toggle="dropdown">
-                                <i class="icon-menu9"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" class="dropdown-item action-edit" data-rowid="' . $row->id . '"><i class="icon-pencil7"></i> Edit</a>
-                                <a href="#" class="dropdown-item action-delete" data-rowid="' . $row->id . '"><i class="icon-cross3"></i> Delete</a>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button" class="action-edit btn btn-outline bg-primary text-primary btn-icon" data-rowid="' . $row->id . '">
+                        <i class="icon-pencil7"></i>
+                    </button>
+                    <button type="button" class="action-delete btn btn-outline bg-danger text-danger btn-icon" data-rowid="' . $row->id . '">
+                        <i class="icon-trash"></i>
+                    </button>
                 </div>';
                 return $buttons;
             })
-            ->rawColumns(['gambar', 'action'])
+            ->rawColumns(['action'])
             ->toJson();
     }
 
@@ -187,7 +181,7 @@ class BannerController extends Controller
             $request->all(),
             [
                 'judul' => 'required|string',
-                'gambar' => 'required|image|max:2000',
+                'gambar' => 'nullable|image|max:2000',
                 'deskripsi' => 'nullable|string',
                 'link' => 'nullable|string|url',
                 'status' => 'required|string|in:aktif,tidak',
@@ -202,8 +196,10 @@ class BannerController extends Controller
             ], 400);
         }
 
-        Storage::delete($banner->gambar);
-        $path = Storage::putFile('public/images/banners', $request->file('gambar'));
+        if ($request->file('gambar')) {
+            Storage::delete($banner->gambar);
+            $path = Storage::putFile('public/images/banners', $request->file('gambar'));
+        }
 
         $banner->update([
             'judul' => $request->judul,

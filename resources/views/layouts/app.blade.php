@@ -19,11 +19,12 @@
     {{-- Page content --}}
     <div class="page-content">
 
-        BOGENG: {{ Auth::check() }}
+        {{-- {{ Session::invalidate() }} --}}
+        {{-- {{ var_dump('<pre>', auth()->user(), /*Session::all(),*/ '</pre>') }} --}}
 
-        @auth('api')
+        @if(Session::has('users'))
             @include('layouts.partials.sidebar.main')
-        @endauth
+        @endif
 
         {{-- Main content --}}
         <div class="content-wrapper">

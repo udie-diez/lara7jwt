@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -32,8 +33,8 @@ class LoginController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => ['required', 'string', 'email'],
-                'password' => ['required', 'string', 'min:6']
+                'email' => 'required|string|email',
+                'password' => 'required|string|min:6',
             ]
         );
 
@@ -45,23 +46,36 @@ class LoginController extends Controller
         }
 
         try {
-            $url = env('API_URL', 'https://api-presensi.chegspro.com');
-            $client = new \GuzzleHttp\Client([
-                'base_uri' => $url
-            ]);
-            $reqClient = $client->request('POST', 'auth/login', [
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . 'auth/login');
+            $url = URL::to('/api/auth/login');
+
+            $client = new \GuzzleHttp\Client();
+            $reqClient = $client->request('POST', $url, [
                 'headers' => [
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
                 ],
                 'json' => $request->all()
             ]);
             $resp = json_decode($reqClient->getBody());
-            if ($resp->code === 200) {
+            // trendy dev
+            if (isset($resp->code) && $resp->code === 200) {
                 $user = new User((array) $resp->data->user);
                 $accessToken = $resp->data->accessToken->token;
                 $refreshToken = $resp->data->accessToken->refreshToken;
-                Auth::guard('web')->login($user);
-                Auth::guard('api')->login($user);
+                Auth::guard('web')->loginUsingId($user, true);
+                // Auth::guard('api')->loginUsingId($user, true);
+                $request->session()->regenerate();
+                $request->session()->put('users', (array) $resp->data->user);
+                $request->session()->put('accessToken', $accessToken);
+                $request->session()->put('refreshToken', $refreshToken);
+            }
+            // mine
+            if (isset($resp->status) && $resp->status === 'success') {
+                $user = new User((array) $resp->data->user);
+                $accessToken = $resp->data->access_token;
+                $refreshToken = $resp->data->refresh_token;
+                Auth::guard('web')->loginUsingId($user, true);
+                // Auth::guard('api')->loginUsingId($user, true);
                 $request->session()->regenerate();
                 $request->session()->put('users', (array) $resp->data->user);
                 $request->session()->put('accessToken', $accessToken);
@@ -94,8 +108,8 @@ class LoginController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => ['required', 'string', 'email'],
-                'password' => ['required', 'string', 'min:6']
+                'email' => 'required|string|email',
+                'password' => 'required|string|min:6',
             ]
         );
 
@@ -133,11 +147,16 @@ class LoginController extends Controller
     /**
      * Logout the authenticated user
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout()
+    public function logout(Request $request)
     {
+        Auth::guard('web')->logout();
         Auth::guard('api')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'status' => 'success',

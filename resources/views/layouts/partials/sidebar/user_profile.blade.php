@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <h6 class="font-weight-semibold mb-0">{{ session('users') ? session('users')['name'] : 'Guest' }}</h6>
+        <h6 class="font-weight-semibold mb-0">{{ Session::has('users') ? Session::get('users')['name'] : 'Guest' }}</h6>
         <span class="d-block opacity-75">Jakarta</span>
     </div>
 </div>

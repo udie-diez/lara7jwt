@@ -2,4 +2,5 @@ require('./bootstrap');
 require('./utils/spinner');
 require('./utils/convertFormToJSON');
 require('./utils/noti');
-require('./utils/sweetConfirm');
+require('./utils/decodeHtml');
+// require('./utils/sweetConfirm');

@@ -35,7 +35,7 @@ class PasswordResetController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => ['required', 'string', 'email', 'exists:users'],
+                'email' => 'required|string|email|exists:users',
             ]
         );
 
@@ -87,8 +87,8 @@ class PasswordResetController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => ['required', 'string', 'email', 'exists:users'],
-                'password' => ['required', 'string', 'min:6', 'confirmed'],
+                'email' => 'required|string|email|exists:users',
+                'password' => 'required|string|min:6|confirmed',
             ]
         );
 

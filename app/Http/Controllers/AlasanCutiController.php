@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlasanCuti;
-use App\Models\JenisCuti;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AlasanCutiController extends Controller
@@ -22,7 +22,7 @@ class AlasanCutiController extends Controller
      */
     public function index()
     {
-        $jenisCuti = JenisCuti::where('status', 'aktif');
+        $jenisCuti = DB::select('select * from jenis_cuti where status = ?', ['aktif']);
         return view('admin.master_data.alasan_cuti', ['jenis_cuti' => $jenisCuti]);
     }
 
@@ -73,18 +73,12 @@ class AlasanCutiController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $buttons = '<div class="text-center">
-                    <div class="list-icons">
-                        <div class="dropdown">
-                            <a href="#" class="list-icons-item" data-toggle="dropdown">
-                                <i class="icon-menu9"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" class="dropdown-item action-edit" data-rowid="' . $row->id . '"><i class="icon-pencil7"></i> Edit</a>
-                                <a href="#" class="dropdown-item action-delete" data-rowid="' . $row->id . '"><i class="icon-cross3"></i> Delete</a>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button" class="action-edit btn btn-outline bg-primary text-primary btn-icon" data-rowid="' . $row->id . '">
+                        <i class="icon-pencil7"></i>
+                    </button>
+                    <button type="button" class="action-delete btn btn-outline bg-danger text-danger btn-icon" data-rowid="' . $row->id . '">
+                        <i class="icon-trash"></i>
+                    </button>
                 </div>';
                 return $buttons;
             })

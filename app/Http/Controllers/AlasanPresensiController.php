@@ -71,18 +71,12 @@ class AlasanPresensiController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $buttons = '<div class="text-center">
-                    <div class="list-icons">
-                        <div class="dropdown">
-                            <a href="#" class="list-icons-item" data-toggle="dropdown">
-                                <i class="icon-menu9"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" class="dropdown-item action-edit" data-rowid="' . $row->id . '"><i class="icon-pencil7"></i> Edit</a>
-                                <a href="#" class="dropdown-item action-delete" data-rowid="' . $row->id . '"><i class="icon-cross3"></i> Delete</a>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button" class="action-edit btn btn-outline bg-primary text-primary btn-icon" data-rowid="' . $row->id . '">
+                        <i class="icon-pencil7"></i>
+                    </button>
+                    <button type="button" class="action-delete btn btn-outline bg-danger text-danger btn-icon" data-rowid="' . $row->id . '">
+                        <i class="icon-trash"></i>
+                    </button>
                 </div>';
                 return $buttons;
             })
@@ -101,8 +95,8 @@ class AlasanPresensiController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'alasan' => ['required', 'string'],
-                'status' => ['required', 'string', 'in:aktif,tidak']
+                'alasan' => 'required|string',
+                'status' => 'required|string|in:aktif,tidak',
             ]
         );
 
@@ -170,8 +164,8 @@ class AlasanPresensiController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'alasan' => ['required', 'string'],
-                'status' => ['required', 'string', 'in:aktif,tidak']
+                'alasan' => 'required|string',
+                'status' => 'required|string|in:aktif,tidak',
             ]
         );
 

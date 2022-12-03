@@ -74,7 +74,7 @@
             try {
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
-                const resp = await axios.post("{{ route('login.post') }}", json);
+                const resp = await axios.post("{{ route('login.submit') }}", json);
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 window.localStorage.setItem("acct", resp.data.data.access_token);
                 window.localStorage.setItem("reft", resp.data.data.refresh_token);
