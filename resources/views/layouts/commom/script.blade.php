@@ -5,7 +5,7 @@
 <script src="{{ asset('themes/js/plugins/notifications/sweet_alert.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 
-@auth('api')
+@if(session('users'))
 <script src="{{ asset('themes/js/plugins/ui/perfect_scrollbar.min.js') }}"></script>
 <script>
     // Setup module
@@ -83,7 +83,7 @@
         }
     );
 </script>
-@endauth
+@endif
 
 <script>
     function getAccT() {

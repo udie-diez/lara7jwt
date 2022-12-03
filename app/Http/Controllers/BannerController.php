@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class BannerController extends Controller
@@ -30,11 +31,52 @@ class BannerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function find(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $banner = Banner::select('*');
+
+        if ($request->has('judul') && $request->judul) {
+            $banner = $banner->where('judul', $request->judul);
+        }
+        if ($request->has('deskripsi') && $request->deskripsi) {
+            $banner = $banner->where('deskripsi', $request->deskripsi);
+        }
+        if ($request->has('status') && $request->status) {
+            $banner = $banner->where('status', $request->status);
+        }
+
+        $banner = $banner->paginate($limit);
+
+        if (!$banner) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Banner tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Banner ditemukan',
+            'data' => ['banner' => $banner]
+        ], 200);
+    }
+
+    /**
+     * Get all list data with datatables
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function list(Request  $request)
     {
         $data = Banner::all();
         return DataTables::of($data)
             ->addIndexColumn()
+            ->editColumn('gambar', function (Banner $banner) {
+                $path = Storage::url($banner->gambar);
+                return !$banner->gambar ? null : '<img src="' . url($path) . '">';
+            })
             ->addColumn('action', function ($row) {
                 $buttons = '<div class="text-center">
                     <div class="list-icons">
@@ -52,7 +94,7 @@ class BannerController extends Controller
                 </div>';
                 return $buttons;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['gambar', 'action'])
             ->toJson();
     }
 
@@ -67,11 +109,11 @@ class BannerController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'judul' => ['required', 'string'],
-                'gambar' => ['nullable', 'string'],
-                'deskripsi' => ['nullable', 'string'],
-                'link' => ['nullable', 'string', 'url'],
-                'status' => ['required', 'string', 'in:aktif,tidak']
+                'judul' => 'required|string',
+                'gambar' => 'required|image|max:2000',
+                'deskripsi' => 'nullable|string',
+                'link' => 'nullable|string|url',
+                'status' => 'required|string|in:aktif,tidak',
             ]
         );
 
@@ -82,9 +124,11 @@ class BannerController extends Controller
             ], 400);
         }
 
+        $path = Storage::putFile('public/images/banners', $request->file('gambar'));
+
         $banner = Banner::create([
             'judul' => $request->judul,
-            'gambar' => $request->gambar,
+            'gambar' => $path,
             'deskripsi' => $request->deskripsi,
             'link' => $request->link,
             'status' => $request->status,
@@ -105,7 +149,7 @@ class BannerController extends Controller
      */
     public function show($id)
     {
-        $banner = Banner::findOrFail($id);
+        $banner = Banner::find($id);
 
         if (!$banner) {
             return response()->json([
@@ -130,7 +174,7 @@ class BannerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $banner = Banner::findOrFail($id);
+        $banner = Banner::find($id);
 
         if (!$banner) {
             return response()->json([
@@ -142,24 +186,28 @@ class BannerController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'judul' => ['required', 'string'],
-                'gambar' => ['nullable', 'string'],
-                'deskripsi' => ['nullable', 'string'],
-                'link' => ['nullable', 'string', 'url'],
-                'status' => ['required', 'string', 'in:aktif,tidak']
+                'judul' => 'required|string',
+                'gambar' => 'required|image|max:2000',
+                'deskripsi' => 'nullable|string',
+                'link' => 'nullable|string|url',
+                'status' => 'required|string|in:aktif,tidak',
             ]
         );
 
         if ($validator->fails()) {
             return response()->json([
+                $request->all(),
                 'status' => 'error',
                 'message' => $validator->errors()
             ], 400);
         }
 
+        Storage::delete($banner->gambar);
+        $path = Storage::putFile('public/images/banners', $request->file('gambar'));
+
         $banner->update([
             'judul' => $request->judul,
-            'gambar' => $request->gambar,
+            'gambar' => $path,
             'deskripsi' => $request->deskripsi,
             'link' => $request->link,
             'status' => $request->status,
@@ -180,7 +228,7 @@ class BannerController extends Controller
      */
     public function destroy($id)
     {
-        $banner = Banner::findOrFail($id);
+        $banner = Banner::find($id);
 
         if (!$banner) {
             return response()->json([
@@ -189,6 +237,7 @@ class BannerController extends Controller
             ], 404);
         }
 
+        Storage::delete($banner->gambar);
         $banner->delete();
 
         return response()->json([

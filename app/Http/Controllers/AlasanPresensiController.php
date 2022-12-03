@@ -30,6 +30,40 @@ class AlasanPresensiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function find(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $alasanPresensi = AlasanPresensi::select('*');
+
+        if ($request->has('alasan') && $request->alasan) {
+            $alasanPresensi = $alasanPresensi->where('alasan', $request->alasan);
+        }
+        if ($request->has('status') && $request->status) {
+            $alasanPresensi = $alasanPresensi->where('status', $request->status);
+        }
+
+        $alasanPresensi = $alasanPresensi->paginate($limit);
+
+        if (!$alasanPresensi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Alasan presensi tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Alasan presensi ditemukan',
+            'data' => ['alasan_presensi' => $alasanPresensi]
+        ], 200);
+    }
+
+    /**
+     * Get all list data with datatables
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function list(Request  $request)
     {
         $data = AlasanPresensi::all();
@@ -99,7 +133,7 @@ class AlasanPresensiController extends Controller
      */
     public function show($id)
     {
-        $alasanPresensi = AlasanPresensi::findOrFail($id);
+        $alasanPresensi = AlasanPresensi::find($id);
 
         if (!$alasanPresensi) {
             return response()->json([
@@ -124,7 +158,7 @@ class AlasanPresensiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $alasanPresensi = AlasanPresensi::findOrFail($id);
+        $alasanPresensi = AlasanPresensi::find($id);
 
         if (!$alasanPresensi) {
             return response()->json([
@@ -168,7 +202,7 @@ class AlasanPresensiController extends Controller
      */
     public function destroy($id)
     {
-        $alasanPresensi = AlasanPresensi::findOrFail($id);
+        $alasanPresensi = AlasanPresensi::find($id);
 
         if (!$alasanPresensi) {
             return response()->json([

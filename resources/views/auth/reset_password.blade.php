@@ -66,9 +66,9 @@
             try {
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
-                const resp = await axios.post('/api/auth/reset-password', json);
+                const resp = await axios.post("{{ route('reset.post') }}", json);
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
-                noti.showProgressRedirect('/auth/login');
+                noti.showProgressRedirect("{{ route('login') }}");
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
                 // get response with a status code not in range 2xx

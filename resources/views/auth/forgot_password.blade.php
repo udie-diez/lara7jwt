@@ -51,7 +51,7 @@
             try {
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
-                const resp = await axios.post('/api/auth/forgot-password', json);
+                const resp = await axios.post("{{ route('forgot.sendLink') }}", json);
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnResetEl);

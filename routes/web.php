@@ -18,20 +18,21 @@ Route::get('/', function () {
 });
 
 Route::group([
-    'middleware' => 'web',
+    'middleware' => 'api',
     'prefix' => 'auth'
 ], function () {
     Route::get('register', 'Auth\RegisterController@showRegisterForm')->name('register');
     Route::get('login', 'Auth\LoginController@showLoginform')->name('login');
+    Route::post('login', 'Auth\LoginController@loginSubmit')->name('login.submit');
     Route::get('forgot-password', 'Auth\PasswordResetController@showForgotForm')->name('forgot');
     Route::get('reset-password/{token}', 'Auth\PasswordResetController@showResetForm')->name('reset');
 });
 
 Route::group([
-    'middleware' => 'auth:api',
-    'prefix' => 'master-data'
+    // 'middleware' => 'auth',
 ], function () {
     Route::get('banner', 'BannerController@index')->name('banner');
     Route::get('jenis-cuti', 'JenisCutiController@index')->name('jenisCuti');
     Route::get('alasan-presensi', 'AlasanPresensiController@index')->name('alasanPresensi');
+    Route::get('alasan-cuti', 'AlasanCutiController@index')->name('alasanCuti');
 });

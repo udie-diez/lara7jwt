@@ -21,4 +21,9 @@ class AlasanCuti extends Model
     protected $fillable = [
         'jenis_cuti_id', 'alasan', 'max_hari', 'status',
     ];
+
+    public function jenis_cuti()
+    {
+        return $this->belongsTo('App\Models\JenisCuti', 'jenis_cuti_id', 'id');
+    }
 }

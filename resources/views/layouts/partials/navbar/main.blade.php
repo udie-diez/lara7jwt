@@ -6,7 +6,7 @@
         </a>
     </div>
 
-    @auth('api')
+    @if(session('users'))
     <div class="d-md-none">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
             <i class="icon-tree5"></i>
@@ -15,10 +15,10 @@
             <i class="icon-paragraph-justify3"></i>
         </button>
     </div>
-    @endauth
+    @endif
 
     <div class="collapse navbar-collapse" id="navbar-mobile">
-        @auth('api')
+        @if(session('users'))
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a href="#" class="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
@@ -26,14 +26,7 @@
                 </a>
             </li>
         </ul>
-        @endauth
-
-        @guest
-        <span class="ml-md-3 mr-md-auto">{{ __('Welcome, Guest') }}</span>
-        @endguest
-
-        @auth('api')
-        <span class="ml-md-3 mr-md-auto">{{ __('Welcome') }}, {{ Auth::user()->name }}</span>
+        <span class="ml-md-3 mr-md-auto">{{ __('Welcome') }}, {{ session('users')['name'] }}</span>
 
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
@@ -51,15 +44,17 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a href="{{ route('logout') }}" class="navbar-nav-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                <a href="{{ route('logout') }}" class="navbar-nav-link" onclick="event.preventDefault();await axios.get('{{ route('logout') }}', {headers: {Authorization: 'Bearer ' + getAccT()}});">
                     <i class="icon-exit"></i>
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                <form id="logout-form" action="{{ route('logout') }}" method="GET" class="d-none">
                     @csrf
                 </form>
             </li>
         </ul>
-        @endauth
+        @else
+        <span class="ml-md-3 mr-md-auto">{{ __('Welcome, Guest') }}</span>
+        @endif
 
     </div>
 </div>

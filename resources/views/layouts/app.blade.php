@@ -19,9 +19,11 @@
     {{-- Page content --}}
     <div class="page-content">
 
-        @if(Auth::guard('api')->check())
+        BOGENG: {{ Auth::check() }}
+
+        @auth('api')
             @include('layouts.partials.sidebar.main')
-        @endif
+        @endauth
 
         {{-- Main content --}}
         <div class="content-wrapper">

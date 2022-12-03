@@ -89,11 +89,11 @@
             </ul>
         </li>
         <li class="nav-item">
-            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();document.getElementById('logout-form2').submit();">
+            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();await axios.get('{{ route('logout') }}', {headers: {Authorization: 'Bearer ' + getAccT()}});">
                 <i class="icon-exit text-danger"></i>
                 <span>Logout</span>
             </a>
-            <form id="logout-form2" action="{{ route('logout') }}" method="POST" class="d-none">
+            <form id="logout-form2" action="{{ route('logout') }}" method="GET" class="d-none">
                 @csrf
             </form>
         </li>
