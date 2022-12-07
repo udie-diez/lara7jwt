@@ -179,7 +179,7 @@
             var table = $('#tbl-banner').DataTable({
                 buttons: [
                     {
-                        text: '<i class="icon-file-plus"></i>',
+                        text: '<i class="icon-file-plus" data-popup="tooltip" title="Tambah Data"></i>',
                         className: 'btn btn-light action-create',
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Banner');
@@ -192,7 +192,7 @@
                         }
                     },
                     {
-                        text: '<i class="icon-loop3"></i>',
+                        text: '<i class="icon-loop3" data-popup="tooltip" title="Refresh"></i>',
                         className: 'btn btn-light action-refresh',
                         action: function(e, dt, node, config) {
                             dt.ajax.reload(null, false);
@@ -200,7 +200,7 @@
                     },
                     {
                         extend: 'excelHtml5',
-                        text: '<i class="icon-file-excel"></i>',
+                        text: '<i class="icon-file-excel" data-popup="tooltip" title="Export to Excel"></i>',
                         className: 'btn btn-light',
                         exportOptions: {
                             columns: ':visible'
@@ -208,7 +208,7 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        text: '<i class="icon-file-pdf"></i>',
+                        text: '<i class="icon-file-pdf" data-popup="tooltip" title="Export to PDF"></i>',
                         className: 'btn btn-light',
                         exportOptions: {
                             columns: ':visible'
@@ -218,9 +218,8 @@
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 processing: true,
                 serverSide: true,
-                ajax: {
-                    url: "{{ route('banner.list') }}",
-                },
+                ajax: "{{ route('banner.list') }}",
+                searchDelay: 800,
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'title', name: 'title'},

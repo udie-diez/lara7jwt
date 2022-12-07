@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('AuthCheck', ['except' => 'showLoginform']);
+        $this->middleware('guest', ['only' => 'showLoginform']);
     }
 
     /**
@@ -166,6 +166,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->intended('auth/login');
+        return redirect()->route('login');
     }
 }

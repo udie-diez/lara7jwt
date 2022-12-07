@@ -15,11 +15,13 @@
                 console.warn('Warning - perfect_scrollbar.min.js is not loaded.');
                 return;
             }
-            // Initialize
-            var ps = new PerfectScrollbar('.sidebar-fixed .sidebar-content', {
-                wheelSpeed: 2,
-                wheelPropagation: true
-            });
+            if (document.querySelector('.sidebar-fixed .sidebar-content')) {
+                // Initialize
+                var ps = new PerfectScrollbar('.sidebar-fixed .sidebar-content', {
+                    wheelSpeed: 2,
+                    wheelPropagation: true
+                });
+            }
         };
         return {
             init: function() {

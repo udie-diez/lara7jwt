@@ -35,8 +35,6 @@ Route::group([
 ], function () {
     Route::post('token-refresh', 'Auth\LoginController@refresh')->name('token.refresh');
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-    Route::get('alasan-presensi', 'Admin\MasterData\AlasanPresensiController@index')->name('alasanPresensi');
-    Route::get('alasan-cuti', 'Admin\MasterData\AlasanCutiController@index')->name('alasanCuti');
 
     Route::group([
         'prefix' => 'dashboard',

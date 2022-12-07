@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PasswordResetController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
     /**
      * Show the form forgot password
      *
