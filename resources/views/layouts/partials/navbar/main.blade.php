@@ -44,10 +44,10 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a href="{{ route('logout') }}" class="navbar-nav-link" onclick="event.preventDefault();await axios.get('{{ route('logout') }}', {headers: {Authorization: 'Bearer ' + getAccT()}});">
+                <a href="{{ route('logout') }}" class="navbar-nav-link" onclick="event.preventDefault();document.querySelector('#logout-form').submit();">
                     <i class="icon-exit"></i>
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="GET" class="d-none">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
                 </form>
             </li>

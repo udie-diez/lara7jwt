@@ -1,7 +1,15 @@
 @extends('layouts.app')
 
-@section('page_header')
+@section('header_title')
+    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Alasan Cuti') }}
+@endsection
 
+@section('breadcrumb')
+    <div class="breadcrumb">
+        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
+        <a href="#" class="breadcrumb-item">{{ __('Master Data') }}</a>
+        <span class="breadcrumb-item active">{{ __('Alasan Cuti') }}</span>
+    </div>
 @endsection
 
 @section('content')
@@ -11,7 +19,6 @@
                 <thead>
                     <tr>
                         <th>Nomor</th>
-                        <th>Jenis Cuti ID</th>
                         <th>Jenis Cuti</th>
                         <th>Nama alasan</th>
                         <th>Maksimum Hari</th>
@@ -59,7 +66,7 @@
                     resp = await axios.post(url, json);
                 }
 
-                if (resp.data.status === 'success') {
+                if (resp.data.code === 200) {
                     $('#modal_alasan_cuti').modal('hide');
                     $('.action-refresh').click();
                     noti.show({
@@ -81,37 +88,37 @@
                         return;
                     }
                     if (typeof err.response.data.message === 'object') {
-                        if ($('#jenis_cuti-error').length === 0) {
-                            if (err.response.data.message.jenis_cuti_id) {
-                                const message = `<label id="jenis_cuti-error" class="validation-invalid-label" for="jenis_cuti">${err.response.data.message.jenis_cuti_id[0]}</label>`;
-                                const parent = $('#jenis_cuti').parent();
+                        if ($('#jenisCutiId-error').length === 0) {
+                            if (err.response.data.message.jenisCutiId) {
+                                const message = `<label id="jenisCutiId-error" class="validation-invalid-label" for="jenisCutiId">${err.response.data.message.jenisCutiId[0]}</label>`;
+                                const parent = $('#jenisCutiId').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.jenis_cuti_id) {
-                                $('#jenis_cuti-error').show().html(err.response.data.message.jenis_cuti_id[0]);
+                            if (err.response.data.message.jenisCutiId) {
+                                $('#jenisCutiId-error').show().html(err.response.data.message.jenisCutiId[0]);
                             }
                         }
-                        if ($('#alasan-error').length === 0) {
-                            if (err.response.data.message.alasan) {
-                                const message = `<label id="alasan-error" class="validation-invalid-label" for="alasan">${err.response.data.message.alasan[0]}</label>`;
-                                const parent = $('#alasan').parent();
+                        if ($('#description-error').length === 0) {
+                            if (err.response.data.message.description) {
+                                const message = `<label id="description-error" class="validation-invalid-label" for="description">${err.response.data.message.description[0]}</label>`;
+                                const parent = $('#description').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.alasan) {
-                                $('#alasan-error').show().html(err.response.data.message.alasan[0]);
+                            if (err.response.data.message.description) {
+                                $('#description-error').show().html(err.response.data.message.description[0]);
                             }
                         }
-                        if ($('#max_hari-error').length === 0) {
-                            if (err.response.data.message.max_hari) {
-                                const message = `<label id="max_hari-error" class="validation-invalid-label" for="max_hari">${err.response.data.message.max_hari[0]}</label>`;
-                                const parent = $('#max_hari').parent();
+                        if ($('#maxDay-error').length === 0) {
+                            if (err.response.data.message.maxDay) {
+                                const message = `<label id="maxDay-error" class="validation-invalid-label" for="maxDay">${err.response.data.message.maxDay[0]}</label>`;
+                                const parent = $('#maxDay').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.max_hari) {
-                                $('#max_hari-error').show().html(err.response.data.message.max_hari[0]);
+                            if (err.response.data.message.maxDay) {
+                                $('#maxDay-error').show().html(err.response.data.message.maxDay[0]);
                             }
                         }
                         if ($('#status-error').length === 0) {
@@ -152,14 +159,8 @@
                 autoWidth: false,
                 columnDefs: [{
                     orderable: false,
-                    targets: [ 0 ]
-                }, {
-                    visible: false,
-                    targets: [ 1 ]
-                }, {
-                    orderable: false,
                     width: 150,
-                    targets: [ 6 ]
+                    targets: [ 5 ]
                 }],
                 dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
                 language: {
@@ -177,6 +178,7 @@
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Alasan Cuti');
                             $('#modal_alasan_cuti form').trigger('reset');
+                            $.uniform.update();
                             $('#modal_alasan_cuti').data({
                                 'action': 'create',
                             }).modal('show');
@@ -211,20 +213,17 @@
                 serverSide: true,
                 ajax: {
                     url: "{{ route('alasanCuti.list') }}",
-                    headers: { 'Authorization': `Bearer ${getAccT()}` }
                 },
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                    {data: 'jenis_cuti_id', name: 'jenis_cuti_id', visible: false},
-                    {data: 'jenis_cuti', name: 'jenis_cuti.alasan', render: function(data, type, row, meta) {
-                        return data.alasan;
-                    }},
-                    {data: 'alasan', name: 'alasan'},
-                    {data: 'max_hari', name: 'max_hari'},
+                    {data: 'jenisCutiId', name: 'jenisCutiId', visible: false},
+                    {data: 'description', name: 'description'},
+                    {data: 'maxDay', name: 'maxDay'},
                     {data: 'status', name: 'status', render: function(data, type, row, meta) {
-                        let color = data === 'aktif' ? 'bg-blue' : 'bg-danger';
+                        let color = data == true || data == 1 ? 'bg-blue' : 'bg-danger';
+                        let text = data == true || data == 1 ? 'Aktif' : 'Tidak Aktif';
                         return `<div class="text-center">
-                            <span class="badge ${color}">${data}</span>
+                            <span class="badge ${color}">${text}</span>
                         </div>`;
                     }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -266,7 +265,7 @@
                     }
                 },
                 rules: {
-                    max_hari: {
+                    maxDay: {
                         digits: true
                     }
                 },
@@ -280,10 +279,11 @@
                 const data = table.row($(me).parents('tr')).data();
 
                 $('.modal-title').html('Edit Alasan Cuti');
-                $('#jenis_cuti').val(data.jenis_cuti_id).trigger('change');
-                $('#alasan').val(data.alasan);
-                $('#max_hari').val(data.max_hari);
-                $('#status').val(data.status).trigger('change');
+                $('#jenisCutiId').val(`${data.jenisCutiId}`).trigger('change');
+                $('#description').val(`${data.description}`);
+                $('#maxDay').val(`${data.maxDay}`);
+                $('#status').val(`${data.status}`).trigger('change');
+                $.uniform.update();
 
                 $('#modal_alasan_cuti').data({
                     'action': 'edit',

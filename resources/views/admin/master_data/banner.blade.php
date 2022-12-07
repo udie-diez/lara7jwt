@@ -1,7 +1,15 @@
 @extends('layouts.app')
 
-@section('page_header')
+@section('header_title')
+    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Banner') }}
+@endsection
 
+@section('breadcrumb')
+    <div class="breadcrumb">
+        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
+        <a href="#" class="breadcrumb-item">{{ __('Master Data') }}</a>
+        <span class="breadcrumb-item active">{{ __('Banner') }}</span>
+    </div>
 @endsection
 
 @section('content')
@@ -57,9 +65,9 @@
 
             try {
                 const formData = new FormData();
-                formData.append('judul', $('#judul').val());
-                formData.append('gambar', $('#gambar')[0].files[0]);
-                formData.append('deskripsi', $('.trumbowyg_default').trumbowyg('html'));
+                formData.append('title', $('#title').val());
+                formData.append('image', $('#image')[0].files[0]);
+                formData.append('description', $('.trumbowyg_default').trumbowyg('html'));
                 formData.append('link', $('#link').val());
                 formData.append('status', $('#status').val());
 
@@ -83,7 +91,7 @@
                     });
                 }
 
-                if (resp.data.status === 'success') {
+                if (resp.data.code === 200) {
                     $('#modal_banner').modal('hide');
                     $('.action-refresh').click();
                     noti.show({
@@ -105,15 +113,15 @@
                         return;
                     }
                     if (typeof err.response.data.message === 'object') {
-                        if ($('#judul-error').length === 0) {
-                            if (err.response.data.message.judul) {
-                                const message = `<label id="judul-error" class="validation-invalid-label" for="judul">${err.response.data.message.judul[0]}</label>`;
-                                const parent = $('#judul').parent();
+                        if ($('#title-error').length === 0) {
+                            if (err.response.data.message.title) {
+                                const message = `<label id="title-error" class="validation-invalid-label" for="title">${err.response.data.message.title[0]}</label>`;
+                                const parent = $('#title').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.judul) {
-                                $('#judul-error').show().html(err.response.data.message.judul[0]);
+                            if (err.response.data.message.title) {
+                                $('#title-error').show().html(err.response.data.message.title[0]);
                             }
                         }
                         if ($('#status-error').length === 0) {
@@ -176,8 +184,8 @@
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Banner');
                             $('#modal_banner form').trigger('reset');
-                            $('#gambar').empty();
                             $('.trumbowyg_default').trumbowyg('html', '');
+                            $.uniform.update();
                             $('#modal_banner').data({
                                 'action': 'create',
                             }).modal('show');
@@ -212,21 +220,20 @@
                 serverSide: true,
                 ajax: {
                     url: "{{ route('banner.list') }}",
-                    headers: { 'Authorization': `Bearer ${getAccT()}` }
                 },
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'judul', name: 'judul'},
-                    {data: 'gambar', name: 'gambar', render: function(data, type, row, meta) {
-                        let path = `{{ url('/') }}/${data}`.replace('public', 'storage');
-                        return !data ? null : `<a target="_blank" href="${path}"><img src="${path}" class="rounded-circle" width="32" height="32"></a>`;
+                    {data: 'title', name: 'title'},
+                    {data: 'image', name: 'image', render: function(data, type, row, meta) {
+                        return !data ? null : `<a target="_blank" href="${data}"><img src="${data}" class="rounded-circle" width="32" height="32"></a>`;
                     }},
-                    {data: 'deskripsi', name: 'deskripsi'},
+                    {data: 'description', name: 'description'},
                     {data: 'link', name: 'link'},
                     {data: 'status', name: 'status', render: function(data, type, row, meta) {
-                        let color = data === 'aktif' ? 'bg-blue' : 'bg-danger';
+                        let color = data == true || data == 1 ? 'bg-blue' : 'bg-danger';
+                        let text = data == true || data == 1 ? 'Aktif' : 'Tidak Aktif';
                         return `<div class="text-center">
-                            <span class="badge ${color}">${data}</span>
+                            <span class="badge ${color}">${text}</span>
                         </div>`;
                     }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -282,11 +289,12 @@
                 const data = table.row($(me).parents('tr')).data();
 
                 $('.modal-title').html('Edit Banner');
-                $('#judul').val(data.judul);
-                const deskripsi = decodeHtml(data.deskripsi);
-                $('#deskripsi').val(deskripsi);
-                $('.trumbowyg_default').trumbowyg('html', deskripsi);
-                $('#status').val(data.status).trigger('change');
+                $('#title').val(`${data.title}`);
+                const description = decodeHtml(data.description);
+                $('#description').val(`${description}`);
+                $('.trumbowyg_default').trumbowyg('html', description);
+                $('#status').val(`${data.status}`).trigger('change');
+                $.uniform.update();
 
                 $('#modal_banner').data({
                     'action': 'edit',

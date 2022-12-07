@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,9 +11,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.verify', ['except' => ['login', 'showLoginform', 'loginSubmit']]);
-        $this->middleware('jwt.xauth', ['except' => ['login', 'showLoginform', 'loginSubmit', 'refresh']]);
-        $this->middleware('jwt.xrefresh', ['only' => ['refresh']]);
+        $this->middleware('AuthCheck', ['except' => 'showLoginform']);
     }
 
     /**
@@ -26,75 +22,6 @@ class LoginController extends Controller
     public function showLoginform()
     {
         return view('auth.login');
-    }
-
-    public function loginSubmit(Request $request)
-    {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|string|email',
-                'password' => 'required|string|min:6',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
-            ], 400);
-        }
-
-        try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . 'auth/login');
-            $url = URL::to('/api/auth/login');
-
-            $client = new \GuzzleHttp\Client();
-            $reqClient = $client->request('POST', $url, [
-                'headers' => [
-                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
-                ],
-                'json' => $request->all()
-            ]);
-            $resp = json_decode($reqClient->getBody());
-            // trendy dev
-            if (isset($resp->code) && $resp->code === 200) {
-                $user = new User((array) $resp->data->user);
-                $accessToken = $resp->data->accessToken->token;
-                $refreshToken = $resp->data->accessToken->refreshToken;
-                Auth::guard('web')->loginUsingId($user, true);
-                // Auth::guard('api')->loginUsingId($user, true);
-                $request->session()->regenerate();
-                $request->session()->put('users', (array) $resp->data->user);
-                $request->session()->put('accessToken', $accessToken);
-                $request->session()->put('refreshToken', $refreshToken);
-            }
-            // mine
-            if (isset($resp->status) && $resp->status === 'success') {
-                $user = new User((array) $resp->data->user);
-                $accessToken = $resp->data->access_token;
-                $refreshToken = $resp->data->refresh_token;
-                Auth::guard('web')->loginUsingId($user, true);
-                // Auth::guard('api')->loginUsingId($user, true);
-                $request->session()->regenerate();
-                $request->session()->put('users', (array) $resp->data->user);
-                $request->session()->put('accessToken', $accessToken);
-                $request->session()->put('refreshToken', $refreshToken);
-            }
-            return $reqClient->getBody();
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            if ($e->hasResponse()) {
-                $response = $e->getResponse();
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $response->getReasonPhrase(),
-                ], $response->getStatusCode());
-            }
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
     }
 
     /**
@@ -120,28 +47,112 @@ class LoginController extends Controller
             ], 400);
         }
 
-        if (!$token = Auth::guard('api')->claims(['xtype' => 'auth'])->attempt($validator->validated())) {
+        try {
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/auth/login');
+            $client = new \GuzzleHttp\Client();
+            $reqClient = $client->request('POST', $url, [
+                'headers' => [
+                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
+                ],
+                'json' => $request->all()
+            ]);
+            $resp = json_decode($reqClient->getBody());
+            if (isset($resp->code) && $resp->code === 200) {
+                $user = (array) $resp->data->user;
+                $accessToken = $resp->data->accessToken->token;
+                $refreshToken = $resp->data->accessToken->refreshToken;
+                $request->session()->regenerate();
+                $request->session()->put('users', $user);
+                $request->session()->put('accessToken', $accessToken);
+                $request->session()->put('refreshToken', $refreshToken);
+            }
+            return response()->json($resp, 200);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            if ($e->hasResponse()) {
+                $response = $e->getResponse();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->getReasonPhrase(),
+                ], $response->getStatusCode());
+            }
             return response()->json([
                 'status' => 'error',
-                'message' => 'Percobaan masuk ke sistem gagal'
-            ], 401);
+                'message' => $e->getMessage(),
+            ], $e->getCode());
         }
-
-        return $this->respondWithToken($token);
     }
 
     /**
      * Show the authenticated user
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function me()
+    public function me(Request $request)
     {
+        $user = $request->session()->get('users');
         return response()->json([
             'status' => 'success',
             'message' => 'Akun yang terotentikasi',
-            'data' => ['user' => Auth::guard('api')->user()]
+            'data' => ['user' => $user]
         ], 200);
+    }
+
+    /**
+     * Generate new refresh token
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function refresh(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'refreshToken' => 'required|string',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        try {
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/auth/refreshToken');
+            $client = new \GuzzleHttp\Client();
+            $reqClient = $client->request('POST', $url, [
+                'headers' => [
+                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
+                ],
+                'json' => $request->all()
+            ]);
+            $resp = json_decode($reqClient->getBody());
+            if (isset($resp->code) && $resp->code === 200) {
+                // $user = (array) $resp->data->user;
+                $accessToken = $resp->data->token;
+                $refreshToken = $resp->data->refreshToken;
+                $request->session()->regenerate();
+                // $request->session()->put('users', $user);
+                $request->session()->put('accessToken', $accessToken);
+                $request->session()->put('refreshToken', $refreshToken);
+            }
+            return response()->json($resp, 200);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            if ($e->hasResponse()) {
+                $response = $e->getResponse();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->getReasonPhrase(),
+                ], $response->getStatusCode());
+            }
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
     }
 
     /**
@@ -152,55 +163,9 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-        Auth::guard('api')->logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Berhasil keluar dari sistem'
-        ], 200);
-    }
-
-    /**
-     * Generate new refresh token
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function refresh()
-    {
-        $access_token = Auth::guard('api')->claims(['xtype' => 'auth'])->refresh(true, true);
-        Auth::guard('api')->setToken($access_token);
-        return $this->respondWithToken($access_token);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  string  $token
-     * @return \Illuminate\Http\Response
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Akun berhasil terotentikasi',
-            'data' => [
-                'user' => Auth::guard('api')->user(),
-                'token_type' => 'bearer',
-                'access_token' => $token,
-                'access_expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
-                'refresh_token' => Auth::guard('api')
-                    ->claims([
-                        'xtype' => 'refresh',
-                        'xpair' => Auth::guard('api')->payload()->get('jti')
-                    ])
-                    ->setTTL(Auth::guard('api')->factory()->getTTL() * 3)
-                    ->tokenById(Auth::guard('api')->user()->id),
-                'refresh_expires_in' => Auth::guard('api')->factory()->getTTL() * 60
-            ]
-        ], 200);
+        return redirect()->intended('auth/login');
     }
 }

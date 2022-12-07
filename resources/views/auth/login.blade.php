@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('welcome')
 
 @section('content')
     <div class="content d-flex justify-content-center align-items-center">
@@ -74,11 +74,9 @@
             try {
                 const form = $(event.target);
                 const json = convertFormToJSON(form);
-                const resp = await axios.post("{{ route('login.submit') }}", json);
+                const resp = await axios.post("{{ route('login.post') }}", json);
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
-                window.localStorage.setItem("acct", resp.data.data.access_token);
-                window.localStorage.setItem("reft", resp.data.data.refresh_token);
-                noti.showProgressRedirect("{{ route('banner') }}");
+                noti.showProgressRedirect("{{ route('dashboard') }}");
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnLoginEl);
                 // get response with a status code not in range 2xx

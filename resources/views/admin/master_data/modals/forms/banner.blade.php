@@ -14,41 +14,41 @@
                     <div class="error"></div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Judul</label>
+                        <label for="title" class="col-form-label col-lg-2">Judul</label>
                         <div class="col-lg-10">
-                            <input type="text" id="judul" name="judul" class="form-control" placeholder="{{ __('Judul banner') }}" autofocus required>
+                            <input type="text" id="title" name="title" class="form-control" placeholder="{{ __('Judul banner') }}" autofocus required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Gambar</label>
+                        <label for="image" class="col-form-label col-lg-2">Gambar</label>
                         <div class="col-lg-10">
-                            <input type="file" id="gambar" name="gambar" class="form-input-styled" data-fouc placeholder="{{ __('Pilih gambar') }}" required>
+                            <input type="file" id="image" name="image" class="form-input-styled" data-fouc placeholder="{{ __('Pilih gambar') }}" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-form-label col-lg-2">Deskripsi</label>
                         <div class="col-lg-10">
-                            <input type="hidden" id="deskripsi" name="deskripsi" class="form-control" placeholder="{{ __('Deskripsi banner') }}">
+                            <input type="hidden" id="description" name="description" class="form-control" placeholder="{{ __('Deskripsi banner') }}">
                             <div class="trumbowyg_default" placeholder="Deskripsi banner"></div>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Link</label>
+                        <label for="link" class="col-form-label col-lg-2">Link</label>
                         <div class="col-lg-10">
-                            <input type="url" id="link" name="link" class="form-control" placeholder="{{ __('Link banner') }}">
+                            <input type="url" id="link" name="link" class="form-control" placeholder="{{ __('Link banner') }}" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Status</label>
+                        <label for="status" class="col-form-label col-lg-2">Status</label>
                         <div class="col-lg-10">
                             <select id="status" name="status" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih status') }}" required>
                                 <option value="">Pilih status</option>
-                                <option value="aktif">Aktif</option>
-                                <option value="tidak">Tidak aktif</option>
+                                <option value="true">Aktif</option>
+                                <option value="false">Tidak aktif</option>
                             </select>
                         </div>
                     </div>

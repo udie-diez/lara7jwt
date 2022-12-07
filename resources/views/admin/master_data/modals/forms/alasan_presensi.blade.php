@@ -14,19 +14,19 @@
                     <div class="error"></div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Nama alasan</label>
+                        <label for="description" class="col-form-label col-lg-2">Nama alasan</label>
                         <div class="col-lg-10">
-                            <input type="text" id="alasan" name="alasan" class="form-control" placeholder="{{ __('Nama alasan') }}" autofocus required>
+                            <input type="text" id="description" name="description" class="form-control" placeholder="{{ __('Nama alasan') }}" autofocus required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Status</label>
+                        <label for="status" class="col-form-label col-lg-2">Status</label>
                         <div class="col-lg-10">
                             <select id="status" name="status" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih status') }}" required>
                                 <option value="">Pilih status</option>
-                                <option value="aktif">Aktif</option>
-                                <option value="tidak">Tidak aktif</option>
+                                <option value="true">Aktif</option>
+                                <option value="false">Tidak aktif</option>
                             </select>
                         </div>
                     </div>

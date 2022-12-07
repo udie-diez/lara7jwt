@@ -32,74 +32,8 @@
         FixedSidebarCustomScroll.init();
     });
 </script>
-<script>
-    axios.interceptors.request.use(
-        (config) => {
-            const token = getAccT();
-            if (token) {
-                config.headers["Authorization"] = `Bearer ${token}`;
-            }
-            return config;
-        },
-        (error) => {
-            return Promise.reject(error);
-        }
-    );
-    axios.interceptors.response.use(
-        (res) => {
-            return res;
-        },
-        async (err) => {
-            const originalConfig = err.config;
-            if (err.response) {
-                // Access Token was expired
-                if (err.response.status === 401 && !originalConfig._retry) {
-                    originalConfig._retry = true;
-
-                    try {
-                        const rs = await refreshToken();
-                        console.log(rs)
-                        const { access_token, refresh_token } = rs.data;
-                        window.localStorage.setItem("acct", access_token);
-                        window.localStorage.setItem("reft", refresh_token);
-                        axios.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
-
-                        return axios(originalConfig);
-                    } catch (_error) {
-                        if (_error.response && _error.response.data) {
-                            return Promise.reject(_error.response.data);
-                        }
-
-                        return Promise.reject(_error);
-                    }
-                }
-
-                if (err.response.status === 403 && err.response.data) {
-                    return Promise.reject(err.response.data);
-                }
-            }
-
-            return Promise.reject(err);
-        }
-    );
-</script>
 @endif
 
-<script>
-    function getAccT() {
-        return window.localStorage.getItem("acct");
-    }
-    function getRefT() {
-        return window.localStorage.getItem("reft");
-    }
-    function refreshToken() {
-        return axios.post("/api/auth/token-refresh", {
-            headers: {
-                'Authorization': `Bearer ${getRefT()}`
-            },
-        });
-    }
-</script>
 <script src="{{ asset('themes/js/app.js') }}"></script>
 
 @yield('scripts')

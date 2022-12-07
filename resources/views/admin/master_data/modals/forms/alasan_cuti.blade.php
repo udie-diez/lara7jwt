@@ -14,29 +14,29 @@
                     <div class="error"></div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Jenis cuti</label>
+                        <label for="jenisCutiId" class="col-form-label col-lg-2">Jenis cuti</label>
                         <div class="col-lg-10">
-                            <select id="jenis_cuti" name="jenis_cuti_id" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih jenis cuti') }}" required>
+                            <select id="jenisCutiId" name="jenisCutiId_id" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih jenis cuti') }}" autofocus required>
                                 <option value="">Pilih jenis cuti</option>
                                 @foreach ($jenis_cuti as $jenis)
-                                    <option value="{{ $jenis->id }}">{{ $jenis->alasan }}</option>
+                                    <option value="{{ $jenis->id }}">{{ $jenis->description }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Nama alasan</label>
+                        <label for="description" class="col-form-label col-lg-2">Nama alasan</label>
                         <div class="col-lg-10">
-                            <input type="text" id="alasan" name="alasan" class="form-control" placeholder="{{ __('Nama alasan') }}" autofocus required>
+                            <input type="text" id="description" name="description" class="form-control" placeholder="{{ __('Nama alasan') }}" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Maksimum hari</label>
+                        <label for="maxDay" class="col-form-label col-lg-2">Maksimum hari</label>
                         <div class="col-lg-10">
                             <div class="input-group">
-                                <input type="text" id="max_hari" name="max_hari" class="form-control" placeholder="{{ __('Maksimum hari') }}" required>
+                                <input type="text" id="maxDay" name="maxDay" class="form-control" placeholder="{{ __('Maksimum hari') }}" required>
                                 <div class="input-group-append">
                                     <span class="input-group-text">hari</span>
                                 </div>
@@ -45,12 +45,12 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Status</label>
+                        <label for="status" class="col-form-label col-lg-2">Status</label>
                         <div class="col-lg-10">
                             <select id="status" name="status" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih status') }}" required>
                                 <option value="">Pilih status</option>
-                                <option value="aktif">Aktif</option>
-                                <option value="tidak">Tidak aktif</option>
+                                <option value="true">Aktif</option>
+                                <option value="false">Tidak aktif</option>
                             </select>
                         </div>
                     </div>

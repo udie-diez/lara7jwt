@@ -19,28 +19,40 @@
     {{-- Page content --}}
     <div class="page-content">
 
-        {{-- {{ Session::invalidate() }} --}}
-        {{-- {{ var_dump('<pre>', auth()->user(), /*Session::all(),*/ '</pre>') }} --}}
-
         @if(Session::has('users'))
             @include('layouts.partials.sidebar.main')
+
+            {{-- Main content --}}
+            <div class="content-wrapper">
+
+                {{-- Page header --}}
+                @include('layouts.partials.page_header')
+                {{-- /Page header --}}
+
+                {{-- Content area --}}
+                @yield('content')
+                {{-- Content area --}}
+
+                @include('layouts.partials.footer.main')
+
+            </div>
+            {{-- /Main content --}}
+
+        @else
+
+            {{-- Main content --}}
+            <div class="content-wrapper">
+
+                {{-- Content area --}}
+                @yield('content')
+                {{-- Content area --}}
+
+                @include('layouts.partials.footer.main')
+
+            </div>
+            {{-- /Main content --}}
+
         @endif
-
-        {{-- Main content --}}
-        <div class="content-wrapper">
-
-            {{-- Page header --}}
-            @yield('page_header')
-            {{-- /Page header --}}
-
-            {{-- Content area --}}
-            @yield('content')
-            {{-- Content area --}}
-
-            @include('layouts.partials.footer.main')
-
-        </div>
-        {{-- /Main content --}}
 
     </div>
     {{-- /Page content --}}

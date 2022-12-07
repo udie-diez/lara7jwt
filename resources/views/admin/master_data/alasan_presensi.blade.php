@@ -1,7 +1,15 @@
 @extends('layouts.app')
 
-@section('page_header')
+@section('header_title')
+    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Alasan Presensi') }}
+@endsection
 
+@section('breadcrumb')
+    <div class="breadcrumb">
+        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
+        <a href="#" class="breadcrumb-item">{{ __('Master Data') }}</a>
+        <span class="breadcrumb-item active">{{ __('Alasan Presensi') }}</span>
+    </div>
 @endsection
 
 @section('content')
@@ -56,7 +64,7 @@
                     resp = await axios.post(url, json);
                 }
 
-                if (resp.data.status === 'success') {
+                if (resp.data.code === 200) {
                     $('#modal_alasan_presensi').modal('hide');
                     $('.action-refresh').click();
                     noti.show({
@@ -78,15 +86,15 @@
                         return;
                     }
                     if (typeof err.response.data.message === 'object') {
-                        if ($('#alasan-error').length === 0) {
-                            if (err.response.data.message.alasan) {
-                                const message = `<label id="alasan-error" class="validation-invalid-label" for="alasan">${err.response.data.message.alasan[0]}</label>`;
-                                const parent = $('#alasan').parent();
+                        if ($('#description-error').length === 0) {
+                            if (err.response.data.message.description) {
+                                const message = `<label id="description-error" class="validation-invalid-label" for="description">${err.response.data.message.description[0]}</label>`;
+                                const parent = $('#description').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.alasan) {
-                                $('#alasan-error').show().html(err.response.data.message.alasan[0]);
+                            if (err.response.data.message.description) {
+                                $('#description-error').show().html(err.response.data.message.description[0]);
                             }
                         }
                         if ($('#status-error').length === 0) {
@@ -146,6 +154,7 @@
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Alasan Presensi');
                             $('#modal_alasan_presensi form').trigger('reset');
+                            $.uniform.update();
                             $('#modal_alasan_presensi').data({
                                 'action': 'create',
                             }).modal('show');
@@ -180,15 +189,15 @@
                 serverSide: true,
                 ajax: {
                     url: "{{ route('alasanPresensi.list') }}",
-                    headers: { 'Authorization': `Bearer ${getAccT()}` }
                 },
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'alasan', name: 'alasan'},
+                    {data: 'description', name: 'description'},
                     {data: 'status', name: 'status', render: function(data, type, row, meta) {
-                        let color = data === 'aktif' ? 'bg-blue' : 'bg-danger';
+                        let color = data == true || data == 1 ? 'bg-blue' : 'bg-danger';
+                        let text = data == true || data == 1 ? 'Aktif' : 'Tidak Aktif';
                         return `<div class="text-center">
-                            <span class="badge ${color}">${data}</span>
+                            <span class="badge ${color}">${text}</span>
                         </div>`;
                     }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -239,8 +248,9 @@
                 const data = table.row($(me).parents('tr')).data();
 
                 $('.modal-title').html('Edit Alasan Presensi');
-                $('#alasan').val(data.alasan);
-                $('#status').val(data.status).trigger('change');
+                $('#description').val(`${data.description}`);
+                $('#status').val(`${data.status}`).trigger('change');
+                $.uniform.update();
 
                 $('#modal_alasan_presensi').data({
                     'action': 'edit',

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('welcome')
 
 @section('content')
     <div class="content d-flex justify-content-center align-items-center">
@@ -53,6 +53,7 @@
                 const json = convertFormToJSON(form);
                 const resp = await axios.post("{{ route('forgot.sendLink') }}", json);
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
+                noti.show({title: 'Information', text: resp.data.message});
             } catch (err) {
                 $('.login-form button').prop('disabled', false).html(btnResetEl);
                 // get response with a status code not in range 2xx
