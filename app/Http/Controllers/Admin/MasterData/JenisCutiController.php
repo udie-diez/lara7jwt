@@ -58,12 +58,12 @@ class JenisCutiController extends Controller
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
@@ -88,7 +88,7 @@ class JenisCutiController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'code' => 400,
                 'message' => $validator->errors()
             ], 400);
         }
@@ -109,12 +109,12 @@ class JenisCutiController extends Controller
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
@@ -143,12 +143,12 @@ class JenisCutiController extends Controller
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
@@ -174,8 +174,8 @@ class JenisCutiController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'code' => 400,
+                'message' => $validator->errors(),
             ], 400);
         }
 
@@ -195,12 +195,12 @@ class JenisCutiController extends Controller
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
@@ -229,12 +229,12 @@ class JenisCutiController extends Controller
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }

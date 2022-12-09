@@ -31,9 +31,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group d-flex align-items-center">
+                    {{-- <div class="form-group d-flex align-items-center">
                         <a href="{{ route('forgot') }}" class="ml-auto">{{ __('Forgot password?') }}</a>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary btn-block">{{ __('Sign in') }} <i class="icon-circle-right2 ml-2"></i></button>

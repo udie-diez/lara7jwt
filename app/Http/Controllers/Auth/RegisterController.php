@@ -43,7 +43,7 @@ class RegisterController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'code' => 400,
                 'message' => $validator->errors()
             ], 400);
         }
@@ -53,9 +53,9 @@ class RegisterController extends Controller
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
                 'headers' => [
-                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
+                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => $request->all()
+                'json' => $request->merge(['role' => 'PENGURUS']),
             ]);
             $resp = json_decode($reqClient->getBody());
             return response()->json($resp, 201);
@@ -63,12 +63,12 @@ class RegisterController extends Controller
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }

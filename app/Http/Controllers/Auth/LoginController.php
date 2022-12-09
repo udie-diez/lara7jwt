@@ -42,8 +42,8 @@ class LoginController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'code' => 400,
+                'message' => $validator->errors(),
             ], 400);
         }
 
@@ -52,12 +52,12 @@ class LoginController extends Controller
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
                 'headers' => [
-                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
+                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => $request->all()
+                'json' => $request->all(),
             ]);
             $resp = json_decode($reqClient->getBody());
-            if (isset($resp->code) && $resp->code === 200) {
+            if ($resp->code === 200) {
                 $user = (array) $resp->data->user;
                 $accessToken = $resp->data->accessToken->token;
                 $refreshToken = $resp->data->accessToken->refreshToken;
@@ -66,17 +66,17 @@ class LoginController extends Controller
                 $request->session()->put('accessToken', $accessToken);
                 $request->session()->put('refreshToken', $refreshToken);
             }
-            return response()->json($resp, 200);
+            return response()->json($resp, $resp->code);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
@@ -92,9 +92,9 @@ class LoginController extends Controller
     {
         $user = $request->session()->get('users');
         return response()->json([
-            'status' => 'success',
-            'message' => 'Akun yang terotentikasi',
-            'data' => ['user' => $user]
+            'code' => 200,
+            'message' => 'Success',
+            'data' => ['user' => $user],
         ], 200);
     }
 
@@ -106,31 +106,17 @@ class LoginController extends Controller
      */
     public function refresh(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'refreshToken' => 'required|string',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
-            ], 400);
-        }
-
         try {
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/auth/refreshToken');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
                 'headers' => [
-                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf')
+                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => $request->all()
+                'json' => ['refreshToken' => session('refreshToken')],
             ]);
             $resp = json_decode($reqClient->getBody());
-            if (isset($resp->code) && $resp->code === 200) {
+            if ($resp->code === 200) {
                 // $user = (array) $resp->data->user;
                 $accessToken = $resp->data->token;
                 $refreshToken = $resp->data->refreshToken;
@@ -139,17 +125,17 @@ class LoginController extends Controller
                 $request->session()->put('accessToken', $accessToken);
                 $request->session()->put('refreshToken', $refreshToken);
             }
-            return response()->json($resp, 200);
+            return response()->json($resp, $resp->code);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
                 return response()->json([
-                    'status' => 'error',
+                    'code' => $response->getStatusCode(),
                     'message' => $response->getReasonPhrase(),
                 ], $response->getStatusCode());
             }
             return response()->json([
-                'status' => 'error',
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }

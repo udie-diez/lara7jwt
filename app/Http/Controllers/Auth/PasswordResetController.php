@@ -45,8 +45,8 @@ class PasswordResetController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'code' => 400,
+                'message' => $validator->errors(),
             ], 400);
         }
 
@@ -64,8 +64,8 @@ class PasswordResetController extends Controller
         });
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'We have e-mailed your password reset link!'
+            'code' => 201,
+            'message' => 'We have e-mailed your password reset link!',
         ], 201);
     }
 
@@ -98,8 +98,8 @@ class PasswordResetController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'code' => 400,
+                'message' => $validator->errors(),
             ], 400);
         }
 
@@ -110,8 +110,8 @@ class PasswordResetController extends Controller
 
         if (!$updatePassword) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid token'
+                'code' => 401,
+                'message' => 'Invalid token',
             ], 401);
         }
 
@@ -123,8 +123,8 @@ class PasswordResetController extends Controller
         ])->delete();
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully changed the password'
+            'code' => 200,
+            'message' => 'You have successfully changed the password',
         ], 200);
     }
 }

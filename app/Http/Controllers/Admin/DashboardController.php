@@ -87,15 +87,15 @@ class DashboardController extends Controller
 
         if (!$anggota) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Anggota tidak ditemukan'
+                'code' => 404,
+                'message' => 'Not found',
             ], 404);
         }
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Anggota ditemukan',
-            'data' => ['anggota' => $anggota]
+            'code' => 200,
+            'message' => 'Success',
+            'data' => ['anggota' => $anggota],
         ], 200);
     }
 
@@ -149,8 +149,8 @@ class DashboardController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'code' => 400,
+                'message' => $validator->errors(),
             ], 400);
         }
 
@@ -166,9 +166,9 @@ class DashboardController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Berhasil disimpan',
-            'data' => ['anggota' => $anggota]
+            'code' => 201,
+            'message' => 'Success',
+            'data' => ['anggota' => $anggota],
         ], 201);
     }
 
@@ -184,15 +184,15 @@ class DashboardController extends Controller
 
         if (!$anggota) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Anggota tidak ditemukan'
+                'code' => 404,
+                'message' => 'Not found',
             ], 404);
         }
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Berhasil ditemukan',
-            'data' => ['anggota' => $anggota]
+            'code' => 200,
+            'message' => 'Success',
+            'data' => ['anggota' => $anggota],
         ], 200);
     }
 
@@ -209,8 +209,8 @@ class DashboardController extends Controller
 
         if (!$anggota) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Anggota tidak ditemukan'
+                'code' => 404,
+                'message' => 'Not found',
             ], 404);
         }
 
@@ -230,8 +230,8 @@ class DashboardController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'code' => 400,
+                'message' => $validator->errors(),
             ], 400);
         }
 
@@ -247,9 +247,9 @@ class DashboardController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Berhasil diperbarui',
-            'data' => ['jenis_cuti' => $anggota]
+            'code' => 200,
+            'message' => 'Success',
+            'data' => ['jenis_cuti' => $anggota],
         ], 200);
     }
 
@@ -265,17 +265,17 @@ class DashboardController extends Controller
 
         if (!$anggota) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Anggota tidak ditemukan'
+                'code' => 404,
+                'message' => 'Not found',
             ], 404);
         }
 
         $anggota->delete();
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Berhasil dihapus',
-            'data' => ['anggota' => $anggota]
+            'code' => 200,
+            'message' => 'Success',
+            'data' => ['anggota' => $anggota],
         ], 200);
     }
 }
