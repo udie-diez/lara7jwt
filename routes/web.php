@@ -115,3 +115,9 @@ Route::group([
         Route::delete('delete/{id}', 'Admin\MasterData\AppVersionController@destroy')->name('appVersion.destroy');
     });
 });
+
+Route::group([
+    'prefix' => 'laporan',
+], function () {
+    Route::get('presensi-tahunan-user', 'Admin\Report\PresensiTahunanUserController@export')->name('export.presensiTahunanUser');
+});
