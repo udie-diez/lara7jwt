@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
-class BannerController extends Controller
+class AppVersionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,27 +17,29 @@ class BannerController extends Controller
      */
     public function index()
     {
-        return view('admin.master_data.banner');
+        return view('admin.master_data.app_version');
     }
 
     /**
      * Get all list data with datatables
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function list()
+    public function list(Request $request)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/banner/all');
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/appversion');
             $client = new \GuzzleHttp\Client();
-            $reqClient = $client->request('GET', $url, [
+            $reqClient = $client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
+                'json' => ['os' => $request->os],
             ]);
             $resp = json_decode($reqClient->getBody());
-            $data = $resp->data->result;
+            $data = !is_array($resp->data) ? [$resp->data] : $resp->data;
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -80,24 +82,25 @@ class BannerController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'title' => 'required|string',
-                'image' => 'required|image|max:2000',
+                'version' => 'required',
                 'description' => 'nullable|string',
+                'os' => 'required|string',
                 'link' => 'required|string|url',
-                'status' => 'required',
+                'build' => 'nullable',
+                'file' => 'required|file|max:2000',
             ]
         );
 
         if ($validator->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => $validator->errors(),
+                'message' => $validator->errors()
             ], 400);
         }
 
         try {
-            $file = $request->file('image');
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/banner');
+            $file = $request->file('file');
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/appversion/add');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
                 'headers' => [
@@ -105,10 +108,11 @@ class BannerController extends Controller
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
                 'multipart' => [
-                    ['name' => 'title', 'contents' => $request->title],
+                    ['name' => 'version', 'contents' => $request->title],
                     ['name' => 'description', 'contents' => $request->description],
+                    ['name' => 'os', 'contents' => $request->os],
                     ['name' => 'link', 'contents' => $request->link],
-                    ['name' => 'status', 'contents' => $request->status],
+                    ['name' => 'build', 'contents' => $request->build],
                     [
                         'name' => 'file',
                         'filename' => $file->getClientOriginalName(),
@@ -143,7 +147,7 @@ class BannerController extends Controller
     public function show($id)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/banner/{$id}");
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/appversion/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
                 'headers' => [
@@ -172,8 +176,8 @@ class BannerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
      * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -181,24 +185,25 @@ class BannerController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'title' => 'required|string',
-                'image' => 'required|image|max:2000',
+                'version' => 'required',
                 'description' => 'nullable|string',
+                'os' => 'required|string',
                 'link' => 'required|string|url',
-                'status' => 'required',
+                'build' => 'nullable',
+                'file' => 'required|file|max:2000',
             ]
         );
 
         if ($validator->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => $validator->errors()
+                'message' => $validator->errors(),
             ], 400);
         }
 
         try {
-            $file = $request->file('image');
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/banner/{$id}");
+            $file = $request->file('file');
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/appversion/update');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
                 'headers' => [
@@ -206,10 +211,12 @@ class BannerController extends Controller
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
                 'multipart' => [
-                    ['name' => 'title', 'contents' => $request->title],
+                    ['name' => 'id', 'contents' => $id],
+                    ['name' => 'version', 'contents' => $request->title],
                     ['name' => 'description', 'contents' => $request->description],
+                    ['name' => 'os', 'contents' => $request->os],
                     ['name' => 'link', 'contents' => $request->link],
-                    ['name' => 'status', 'contents' => $request->status],
+                    ['name' => 'build', 'contents' => $request->build],
                     [
                         'name' => 'file',
                         'filename' => $file->getClientOriginalName(),
@@ -244,7 +251,7 @@ class BannerController extends Controller
     public function destroy($id)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/banner/{$id}/delete");
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/appversion/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
                 'headers' => [

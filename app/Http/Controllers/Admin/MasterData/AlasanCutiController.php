@@ -33,9 +33,10 @@ class AlasanCutiController extends Controller
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
+                $body = json_decode($response->getBody());
                 return response()->json([
                     'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase(),
+                    'message' => $response->getReasonPhrase() . ". " . $body->message,
                 ], $response->getStatusCode());
             }
             return response()->json([
@@ -83,9 +84,10 @@ class AlasanCutiController extends Controller
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
+                $body = json_decode($response->getBody());
                 return response()->json([
                     'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase(),
+                    'message' => $response->getReasonPhrase() . ". " . $body->message,
                 ], $response->getStatusCode());
             }
             return response()->json([
@@ -135,9 +137,10 @@ class AlasanCutiController extends Controller
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
+                $body = json_decode($response->getBody());
                 return response()->json([
                     'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase(),
+                    'message' => $response->getReasonPhrase() . ". " . $body->message,
                 ], $response->getStatusCode());
             }
             return response()->json([
@@ -169,9 +172,10 @@ class AlasanCutiController extends Controller
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
+                $body = json_decode($response->getBody());
                 return response()->json([
                     'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase(),
+                    'message' => $response->getReasonPhrase() . ". " . $body->message,
                 ], $response->getStatusCode());
             }
             return response()->json([
@@ -222,9 +226,10 @@ class AlasanCutiController extends Controller
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
+                $body = json_decode($response->getBody());
                 return response()->json([
                     'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase(),
+                    'message' => $response->getReasonPhrase() . ". " . $body->message,
                 ], $response->getStatusCode());
             }
             return response()->json([
@@ -243,7 +248,7 @@ class AlasanCutiController extends Controller
     public function destroy($id)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/alasanCuti/{$id}");
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/alasanCuti/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
                 'headers' => [
@@ -256,9 +261,10 @@ class AlasanCutiController extends Controller
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
+                $body = json_decode($response->getBody());
                 return response()->json([
                     'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase(),
+                    'message' => $response->getReasonPhrase() . ". " . $body->message,
                 ], $response->getStatusCode());
             }
             return response()->json([

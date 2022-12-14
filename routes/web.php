@@ -92,4 +92,26 @@ Route::group([
         Route::put('update/{id}', 'Admin\MasterData\AlasanCutiController@update')->name('alasanCuti.update');
         Route::delete('delete/{id}', 'Admin\MasterData\AlasanCutiController@destroy')->name('alasanCuti.destroy');
     });
+
+    Route::group([
+        'prefix' => 'hari-libur',
+    ], function () {
+        Route::get('/', 'Admin\MasterData\HariLiburController@index')->name('hariLibur');
+        Route::get('list', 'Admin\MasterData\HariLiburController@list')->name('hariLibur.list');
+        Route::get('{date}', 'Admin\MasterData\HariLiburController@show')->name('hariLibur.read');
+        Route::post('create', 'Admin\MasterData\HariLiburController@store')->name('hariLibur.create');
+        Route::put('update/{id}', 'Admin\MasterData\HariLiburController@update')->name('hariLibur.update');
+        Route::delete('delete/{id}', 'Admin\MasterData\HariLiburController@destroy')->name('hariLibur.destroy');
+    });
+
+    Route::group([
+        'prefix' => 'app-version',
+    ], function () {
+        Route::get('/', 'Admin\MasterData\AppVersionController@index')->name('appVersion');
+        Route::get('list', 'Admin\MasterData\AppVersionController@list')->name('appVersion.list');
+        Route::get('{date}', 'Admin\MasterData\AppVersionController@show')->name('appVersion.read');
+        Route::post('create', 'Admin\MasterData\AppVersionController@store')->name('appVersion.create');
+        Route::put('update/{id}', 'Admin\MasterData\AppVersionController@update')->name('appVersion.update');
+        Route::delete('delete/{id}', 'Admin\MasterData\AppVersionController@destroy')->name('appVersion.destroy');
+    });
 });

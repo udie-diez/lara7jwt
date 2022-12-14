@@ -12,18 +12,28 @@
                 </span>
             </a>
         </li>
-        @if (Request::segment(1) == 'banner' || Request::segment(1) == 'jenis-cuti' || Request::segment(1) == 'alasan-cuti' || Request::segment(1) == 'alasan-presensi')
-            @php $parentClassName = 'nav-item-open'; @endphp
+        @php $parentMDClassName = ''; @endphp
+        @if (
+            Request::segment(1) == 'banner' ||
+            Request::segment(1) == 'jenis-cuti' ||
+            Request::segment(1) == 'alasan-cuti' ||
+            Request::segment(1) == 'alasan-presensi' ||
+            Request::segment(1) == 'hari-libur' ||
+            Request::segment(1) == 'app-version'
+        )
+            @php $parentMDClassName = 'nav-item-open'; @endphp
         @endif
-        <li class="nav-item nav-item-submenu {{ $parentClassName }}">
+        <li class="nav-item nav-item-submenu {{ $parentMDClassName }}">
             <a href="#" class="nav-link"><i class="icon-copy text-success"></i> <span>Data Master</span></a>
 
-            <ul class="nav nav-group-sub" data-submenu-title="Data Master" @if ($parentClassName) {{ 'style=display:block;' }} @endif>
+            <ul class="nav nav-group-sub" data-submenu-title="Data Master" @if ($parentMDClassName) {{ 'style=display:block;' }} @endif>
                 <li class="nav-item"><a href="{{ route('banner') }}" class="nav-link @if (Request::segment(1) == 'banner') {{ 'active' }} @endif">Banner</a></li>
                 <li class="nav-item"><a href="{{ route('jenisCuti') }}" class="nav-link @if (Request::segment(1) == 'jenis-cuti') {{ 'active' }} @endif">Jenis Cuti</a></li>
                 <li class="nav-item"><a href="{{ route('alasanCuti') }}" class="nav-link @if (Request::segment(1) == 'alasan-cuti') {{ 'active' }} @endif">Alasan Cuti</a></li>
                 <li class="nav-item"><a href="{{ route('alasanPresensi') }}" class="nav-link @if (Request::segment(1) == 'alasan-presensi') {{ 'active' }} @endif">Alasan Presensi</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Cuti Pengurus</a></li>
+                <li class="nav-item"><a href="{{ route('hariLibur') }}" class="nav-link @if (Request::segment(1) == 'hari-libur') {{ 'active' }} @endif">Hari Libur</a></li>
+                <li class="nav-item"><a href="{{ route('appVersion') }}" class="nav-link @if (Request::segment(1) == 'app-version') {{ 'active' }} @endif">App Version</a></li>
             </ul>
         </li>
         <li class="nav-item nav-item-submenu">
@@ -70,15 +80,18 @@
                 <li class="nav-item"><a href="#" class="nav-link">Layout 5</a></li>
             </ul>
         </li>
-        <li class="nav-item nav-item-submenu">
+        @php $parentLapClassName = ''; @endphp
+        @if (Request::segment(1) == 'laporan')
+            @php $parentLapClassName = 'nav-item-open'; @endphp
+        @endif
+        <li class="nav-item nav-item-submenu {{ $parentLapClassName }}">
             <a href="#" class="nav-link"><i class="icon-file-stats text-success"></i> <span>Laporan</span></a>
 
-            <ul class="nav nav-group-sub" data-submenu-title="Laporan">
-                <li class="nav-item"><a href="#" class="nav-link active">Default layout</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Layout 2</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Layout 3</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Layout 4</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Layout 5</a></li>
+            <ul class="nav nav-group-sub" data-submenu-title="Laporan" @if ($parentLapClassName) {{ 'style=display:block;' }} @endif>
+                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'presensi-tahunan-user') {{ 'active' }} @endif">Presensi Tahunan User</a></li>
+                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'presensi-bulanan-all-user') {{ 'active' }} @endif">Presensi Bulanan All User</a></li>
+                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'presensi-user') {{ 'active' }} @endif">Presensi User</a></li>
+                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'cuti-user') {{ 'active' }} @endif">Cuti User</a></li>
             </ul>
         </li>
         <li class="nav-item nav-item-submenu">
