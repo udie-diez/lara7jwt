@@ -36,7 +36,7 @@ class AppVersionController extends Controller
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => ['os' => $request->os],
+                'json' => ['os' => $request->os ?? ($request->search['value'] ?? 'android')],
             ]);
             $resp = json_decode($reqClient->getBody());
             $data = !is_array($resp->data) ? [$resp->data] : $resp->data;

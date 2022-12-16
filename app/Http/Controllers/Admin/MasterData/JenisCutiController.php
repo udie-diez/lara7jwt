@@ -190,7 +190,7 @@ class JenisCutiController extends Controller
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => $request->merge(['id' => $id]),
+                'json' => array_merge(['idJenisCuti' => $id], $request->all()),
             ]);
             $resp = json_decode($reqClient->getBody());
             return response()->json($resp, 200);

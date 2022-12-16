@@ -42,7 +42,6 @@ Route::group([
         Route::get('/', 'Admin\DashboardController@index')->name('dashboard');
         Route::get('summary', 'Admin\DashboardController@counter')->name('dashboard.counter');
         Route::get('list', 'Admin\DashboardController@list')->name('dashboard.list');
-        Route::get('search', 'Admin\DashboardController@find')->name('dashboard.search');
         Route::get('{id}', 'Admin\DashboardController@show')->name('dashboard.read');
         Route::post('create', 'Admin\DashboardController@store')->name('dashboard.create');
         Route::put('update/{id}', 'Admin\DashboardController@update')->name('dashboard.update');
@@ -58,6 +57,17 @@ Route::group([
         Route::post('create', 'Admin\MasterData\BannerController@store')->name('banner.create');
         Route::put('update/{id}', 'Admin\MasterData\BannerController@update')->name('banner.update');
         Route::delete('delete/{id}', 'Admin\MasterData\BannerController@destroy')->name('banner.destroy');
+    });
+
+    Route::group([
+        'prefix' => 'cuti',
+    ], function () {
+        Route::get('/', 'Admin\MasterData\CutiController@index')->name('cuti');
+        Route::get('list', 'Admin\MasterData\CutiController@list')->name('cuti.list');
+        Route::get('{id}', 'Admin\MasterData\CutiController@show')->name('cuti.read');
+        Route::post('create', 'Admin\MasterData\CutiController@store')->name('cuti.create');
+        Route::put('update/{id}', 'Admin\MasterData\CutiController@update')->name('cuti.update');
+        Route::delete('delete/{id}', 'Admin\MasterData\CutiController@destroy')->name('cuti.destroy');
     });
 
     Route::group([

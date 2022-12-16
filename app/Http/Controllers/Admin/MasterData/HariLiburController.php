@@ -29,6 +29,10 @@ class HariLiburController extends Controller
      */
     public function list(Request $request)
     {
+        $date = Carbon::now('UTC');
+        $startDate = $date->copy()->startOfYear();
+        $endDate = $date->copy()->endOfYear();
+
         try {
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/holiday/byRange');
             $client = new \GuzzleHttp\Client();
@@ -37,7 +41,10 @@ class HariLiburController extends Controller
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'query' => $request->all(),
+                'query' => [
+                    'startDate' => $request->startDate ?? $startDate,
+                    'endDate' => $request->endDate ?? $endDate,
+                ],
             ]);
             $resp = json_decode($reqClient->getBody());
             $data = $resp->data;

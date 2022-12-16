@@ -16,49 +16,42 @@
                     <div class="form-group row">
                         <label class="col-form-label col-lg-2">No. Anggota</label>
                         <div class="col-lg-10">
-                            <input type="text" id="no_anggota" name="no_anggota" class="form-control" placeholder="{{ __('No Anggota') }}" autofocus required>
+                            <input type="text" id="kode" name="kode" class="form-control" placeholder="{{ __('No Anggota') }}" autofocus>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-form-label col-lg-2">Nama</label>
                         <div class="col-lg-10">
-                            <input type="text" id="nama" name="nama" class="form-control" placeholder="{{ __('Nama') }}" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-form-label col-lg-2">NIK</label>
-                        <div class="col-lg-10">
-                            <input type="text" id="nik" name="nik" class="form-control" placeholder="{{ __('NIK') }}" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Phone</label>
-                        <div class="col-lg-10">
-                            <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="{{ __('Phone') }}">
+                            <input type="text" id="name" name="name" class="form-control" placeholder="{{ __('Nama') }}" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-form-label col-lg-2">Email</label>
                         <div class="col-lg-10">
-                            <input type="text" id="email" name="email" class="form-control" placeholder="{{ __('Email') }}">
+                            <input type="text" id="email" name="email" class="form-control" placeholder="{{ __('Email') }}" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-form-label col-lg-2">Lokasi kerja</label>
+                        <label class="col-form-label col-lg-2">Password</label>
                         <div class="col-lg-10">
-                            <input type="text" id="lokasi_kerja" name="lokasi_kerja" class="form-control" placeholder="{{ __('Lokasi kerja') }}">
+                            <input type="text" id="password" name="password" class="form-control" placeholder="{{ __('Password') }}" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-form-label col-lg-2">Jabatan</label>
                         <div class="col-lg-10">
-                            <input type="text" id="Jabatan" name="Jabatan" class="form-control" placeholder="{{ __('Jabatan') }}">
+                            <input type="text" id="user_type" name="user_type" class="form-control" placeholder="{{ __('Jabatan') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2">Role</label>
+                        <div class="col-lg-10">
+                            <input type="text" id="role" name="role" class="form-control" placeholder="{{ __('Role') }}" required>
                         </div>
                     </div>
 
@@ -67,9 +60,8 @@
                         <div class="col-lg-10">
                             <select id="status" name="status" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih status') }}" required>
                                 <option value="">Pilih status</option>
-                                <option value="aktif">Aktif</option>
-                                <option value="tidak">Tidak aktif</option>
-                                <option value="keluar">Keluar</option>
+                                <option value="true">Aktif</option>
+                                <option value="false">Tidak aktif</option>
                             </select>
                         </div>
                     </div>

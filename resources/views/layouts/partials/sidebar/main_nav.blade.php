@@ -15,6 +15,7 @@
         @php $parentMDClassName = ''; @endphp
         @if (
             Request::segment(1) == 'banner' ||
+            Request::segment(1) == 'cuti' ||
             Request::segment(1) == 'jenis-cuti' ||
             Request::segment(1) == 'alasan-cuti' ||
             Request::segment(1) == 'alasan-presensi' ||
@@ -31,7 +32,7 @@
                 <li class="nav-item"><a href="{{ route('jenisCuti') }}" class="nav-link @if (Request::segment(1) == 'jenis-cuti') {{ 'active' }} @endif">Jenis Cuti</a></li>
                 <li class="nav-item"><a href="{{ route('alasanCuti') }}" class="nav-link @if (Request::segment(1) == 'alasan-cuti') {{ 'active' }} @endif">Alasan Cuti</a></li>
                 <li class="nav-item"><a href="{{ route('alasanPresensi') }}" class="nav-link @if (Request::segment(1) == 'alasan-presensi') {{ 'active' }} @endif">Alasan Presensi</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Cuti Pengurus</a></li>
+                <li class="nav-item"><a href="{{ route('cuti') }}" class="nav-link @if (Request::segment(1) == 'cuti') {{ 'active' }} @endif">Cuti Pengurus</a></li>
                 <li class="nav-item"><a href="{{ route('hariLibur') }}" class="nav-link @if (Request::segment(1) == 'hari-libur') {{ 'active' }} @endif">Hari Libur</a></li>
                 <li class="nav-item"><a href="{{ route('appVersion') }}" class="nav-link @if (Request::segment(1) == 'app-version') {{ 'active' }} @endif">App Version</a></li>
             </ul>

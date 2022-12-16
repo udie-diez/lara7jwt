@@ -18,13 +18,15 @@
             <table id="tbl-app-version" class="table table-bordered table-hover datatable-show-all">
                 <thead>
                     <tr>
-                        <th>Nomor</th>
-                        <th>OS</th>
-                        <th>Versi</th>
-                        <th>Build</th>
-                        <th>Link</th>
-                        <th>Deskripsi</th>
-                        <th class="text-center">Aksi</th>
+                        <th>#</th>
+                        <th>{{ __('OS') }}</th>
+                        <th>{{ __('Versi') }}</th>
+                        <th>{{ __('Build') }}</th>
+                        <th>{{ __('Link') }}</th>
+                        <th>{{ __('Deskripsi') }}</th>
+                        <th>{{ __('Created at') }}</th>
+                        <th>{{ __('Updated at') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +39,7 @@
 @endsection
 
 @section('scripts')
+	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
@@ -218,9 +221,13 @@
                 serverSide: true,
                 ajax: {
                     url: "{{ route('appVersion.list') }}",
-                    data: function(d) {
-                        d.os = 'android';
+                    data: function(params) {
+                        params.os = $('#tbl-anggota_filter input[type="search"]').val();
                     },
+                },
+                search: {
+                    search: 'android',
+                    return: true,
                 },
                 searchDelay: 800,
                 columns: [
@@ -232,6 +239,12 @@
                         return !data ? null : `<a target="_blank" href="${data}">${row.os} ${row.version}</a>`;
                     }},
                     {data: 'description', name: 'description'},
+                    {data: 'createdAt', name: 'createdAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
+                    }},
+                    {data: 'updatedAt', name: 'updatedAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
+                    }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });

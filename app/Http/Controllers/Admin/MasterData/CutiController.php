@@ -7,9 +7,8 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-use stdClass;
 
-class AlasanCutiController extends Controller
+class CutiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,33 +17,7 @@ class AlasanCutiController extends Controller
      */
     public function index()
     {
-        $jenisCuti = [];
-        try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/jenisCuti');
-            $client = new \GuzzleHttp\Client();
-            $reqClient = $client->request('GET', $url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . session('accessToken'),
-                    'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
-                ],
-            ]);
-            $resp = json_decode($reqClient->getBody());
-            $jenisCuti = $resp->data;
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            if ($e->hasResponse()) {
-                $response = $e->getResponse();
-                $body = json_decode($response->getBody());
-                return response()->json([
-                    'code' => $response->getStatusCode(),
-                    'message' => $response->getReasonPhrase() . ". " . $body->message,
-                ], $response->getStatusCode());
-            }
-            return response()->json([
-                'code' => $e->getCode(),
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
-        return view('admin.master_data.alasan_cuti', ['jenis_cuti' => $jenisCuti]);
+        return view('admin.master_data.cuti');
     }
 
     /**
@@ -53,10 +26,10 @@ class AlasanCutiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function list(Request  $request)
+    public function list(Request $request)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/alasanCuti');
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/cutiUser');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
                 'headers' => [
@@ -108,22 +81,20 @@ class AlasanCutiController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'jenisCutiId' => 'required',
-                'description' => 'required|string',
-                'maxDay' => 'required|numeric|min:1',
-                'status' => 'required',
+                'idUser' => 'required',
+                'amount' => 'required',
             ]
         );
 
         if ($validator->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => $validator->errors(),
+                'message' => $validator->errors()
             ], 400);
         }
 
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/alasanCuti/add');
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/cutiUser/add');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
                 'headers' => [
@@ -159,7 +130,7 @@ class AlasanCutiController extends Controller
     public function show($id)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/alasanCuti/{$id}");
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/cutiUser/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
                 'headers' => [
@@ -197,29 +168,27 @@ class AlasanCutiController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'jenisCutiId' => 'required',
-                'description' => 'required|string',
-                'maxDay' => 'required|numeric|min:1',
-                'status' => 'required',
+                'idUser' => 'required',
+                'amount' => 'required',
             ]
         );
 
         if ($validator->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => $validator->errors()
+                'message' => $validator->errors(),
             ], 400);
         }
 
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/alasanCuti/update');
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/cutiUser/update');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => array_merge(['idAlasan' => $id], $request->all()),
+                'json' => $request->all(),
             ]);
             $resp = json_decode($reqClient->getBody());
             return response()->json($resp, 200);
@@ -248,7 +217,7 @@ class AlasanCutiController extends Controller
     public function destroy($id)
     {
         try {
-            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/alasanCuti/{$id}/delete");
+            $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/cutiUser/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
                 'headers' => [

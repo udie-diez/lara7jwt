@@ -16,7 +16,7 @@
                     <div class="form-group row">
                         <label for="jenisCutiId" class="col-form-label col-lg-2">Jenis cuti</label>
                         <div class="col-lg-10">
-                            <select id="jenisCutiId" name="jenisCutiId_id" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih jenis cuti') }}" autofocus required>
+                            <select id="jenisCutiId" name="jenisCutiId" class="form-control form-input-styled" data-fouc placeholder="{{ __('Pilih jenis cuti') }}" autofocus required>
                                 <option value="">Pilih jenis cuti</option>
                                 @foreach ($jenis_cuti as $jenis)
                                     <option value="{{ $jenis->id }}">{{ $jenis->description }}</option>

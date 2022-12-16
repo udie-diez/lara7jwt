@@ -18,12 +18,14 @@
             <table id="tbl-alasan-cuti" class="table table-bordered table-hover datatable-show-all">
                 <thead>
                     <tr>
-                        <th>Nomor</th>
-                        <th>Jenis Cuti</th>
-                        <th>Nama alasan</th>
-                        <th>Maksimum Hari</th>
-                        <th>Status</th>
-                        <th class="text-center">Aksi</th>
+                        <th>#</th>
+                        <th>{{ __('Jenis Cuti') }}</th>
+                        <th>{{ __('Nama alasan') }}</th>
+                        <th>{{ __('Maksimum Hari') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Created at') }}</th>
+                        <th>{{ __('Updated at') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +37,7 @@
 @endsection
 
 @section('scripts')
+	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
@@ -160,7 +163,7 @@
                 columnDefs: [{
                     orderable: false,
                     width: 150,
-                    targets: [ 5 ]
+                    targets: [ 7 ]
                 }],
                 dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
                 language: {
@@ -211,7 +214,12 @@
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('alasanCuti.list') }}",
+                ajax: {
+                    url: "{{ route('alasanCuti.list') }}"
+                },
+                search: {
+                    return: true,
+                },
                 searchDelay: 800,
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
@@ -224,6 +232,12 @@
                         return `<div class="text-center">
                             <span class="badge ${color}">${text}</span>
                         </div>`;
+                    }},
+                    {data: 'createdAt', name: 'createdAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
+                    }},
+                    {data: 'updatedAt', name: 'updatedAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
                     }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]

@@ -23,9 +23,10 @@ class BannerController extends Controller
     /**
      * Get all list data with datatables
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function list()
+    public function list(Request $request)
     {
         try {
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/banner/all');
@@ -34,6 +35,11 @@ class BannerController extends Controller
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
+                ],
+                'query' => [
+                    'keyword' => $request->keyword ?? '',
+                    'pageSize' => $request->pageSize != -1 ? $request->pageSize : 10,
+                    'page' => $request->page ?? 1,
                 ],
             ]);
             $resp = json_decode($reqClient->getBody());
@@ -84,7 +90,7 @@ class BannerController extends Controller
                 'image' => 'required|image|max:2000',
                 'description' => 'nullable|string',
                 'link' => 'required|string|url',
-                'status' => 'required',
+                'status' => 'required|string',
             ]
         );
 
@@ -185,7 +191,7 @@ class BannerController extends Controller
                 'image' => 'required|image|max:2000',
                 'description' => 'nullable|string',
                 'link' => 'required|string|url',
-                'status' => 'required',
+                'status' => 'required|string',
             ]
         );
 

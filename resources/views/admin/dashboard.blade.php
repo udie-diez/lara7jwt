@@ -19,7 +19,7 @@
                 <h6 class="card-title">{{ __('Daftar Anggota') }}</h6>
                 <div class="header-elements">
                     <button type="button" class="btn btn-outline-primary action-create">
-                        <i class="icon-plus3 mr-2"></i> Anggota
+                        <i class="icon-plus3 mr-2"></i> {{ __('Anggota') }}
                     </button>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                             <div class="media">
                                 <div class="media-body">
                                     <h1 class="media-title font-weight-semibold">{{ $anggotaAktif }}</h1>
-                                    <span>AKTIF <i class="icon-circle-right2 ml-2"></i></span>
+                                    <span>{{ __('AKTIF') }} <i class="icon-circle-right2 ml-2"></i></span>
                                 </div>
 
                                 <div class="mt-2 ml-3">
@@ -60,7 +60,7 @@
                             <div class="media">
                                 <div class="media-body">
                                     <h1 class="media-title font-weight-semibold">{{ $anggotaTidakAktif }}</h1>
-                                    <span>NON AKTIF <i class="icon-circle-right2 ml-2"></i></span>
+                                    <span>{{ __('NON AKTIF') }} <i class="icon-circle-right2 ml-2"></i></span>
                                 </div>
 
                                 <div class="mt-2 ml-3">
@@ -75,7 +75,7 @@
                             <div class="media">
                                 <div class="media-body">
                                     <h1 class="media-title font-weight-semibold">{{ $anggotaKeluar }}</h1>
-                                    <span>KELUAR <i class="icon-circle-right2 ml-2"></i></span>
+                                    <span>{{ __('KELUAR') }} <i class="icon-circle-right2 ml-2"></i></span>
                                 </div>
 
                                 <div class="mt-2 ml-3">
@@ -90,7 +90,7 @@
                             <div class="media">
                                 <div class="media-body">
                                     <h1 class="media-title font-weight-semibold">{{ $count }}</h1>
-                                    <span>JUMLAH <i class="icon-circle-right2 ml-2"></i></span>
+                                    <span>{{ __('JUMLAH') }} <i class="icon-circle-right2 ml-2"></i></span>
                                 </div>
 
                                 <div class="mt-2 ml-3">
@@ -105,16 +105,16 @@
             <table id="tbl-anggota" class="table table-bordered table-hover datatable-show-all">
                 <thead>
                     <tr>
-                        <th>Nomor</th>
-                        <th>No. Anggota</th>
-                        <th>Nama</th>
-                        <th>NIK</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Lokasi Kerja</th>
-                        <th>Jabatan</th>
-                        <th>Status</th>
-                        <th class="text-center">Aksi</th>
+                        <th>#</th>
+                        <th>{{ __('Kode') }}</th>
+                        <th>{{ __('Nama') }}</th>
+                        <th>{{ __('Email') }}</th>
+                        <th>{{ __('Jabatan') }}</th>
+                        <th>{{ __('Role') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Created at') }}</th>
+                        <th>{{ __('Updated at') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,6 +126,7 @@
 @endsection
 
 @section('scripts')
+	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
@@ -136,17 +137,6 @@
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/buttons.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/forms/styling/uniform.min.js') }}"></script>
     <script>
-        const getAnggotaSummary = async function() {
-            const resp = await axios.get("{{ route('dashboard.counter') }}");
-            const data = resp.data;
-            const anggotaAktif = data.anggota.filter(a => a.status === 'aktif').map(a => a.total)[0];
-            const anggotaTidakAktif = data.anggota.filter(a => a.status === 'tidak').map(a => a.total)[0];
-            const anggotaKeluar = data.anggota.filter(a => a.status === 'keluar').map(a => a.total)[0];
-            $(`.anggota-aktif .media-title`).html(anggotaAktif ?? 0);
-            $(`.anggota-tidak .media-title`).html(anggotaTidakAktif ?? 0);
-            $(`.anggota-keluar .media-title`).html(anggotaKeluar ?? 0);
-            $(`.anggota-jumlah .media-title`).html(data.count ?? 0);
-        }
         const submitAnggota = async function() {
             event.preventDefault();
             $('.error').html('');
@@ -175,7 +165,6 @@
                         title: modalData.action === 'create' ? "Tambah Anggota" : "Edit Anggota",
                         text: 'Berhasil disimpan'
                     });
-                    getAnggotaSummary();
                 }
                 $('#form-anggota .action-submit').prop('disabled', false).html(btnSubmitEl);
             } catch (err) {
@@ -191,48 +180,15 @@
                         return;
                     }
                     if (typeof err.response.data.message === 'object') {
-                        if ($('#no_anggota-error').length === 0) {
-                            if (err.response.data.message.no_anggota) {
-                                const message = `<label id="no_anggota-error" class="validation-invalid-label" for="no_anggota">${err.response.data.message.no_anggota[0]}</label>`;
-                                const parent = $('#no_anggota').parent();
+                        if ($('#name-error').length === 0) {
+                            if (err.response.data.message.name) {
+                                const message = `<label id="name-error" class="validation-invalid-label" for="name">${err.response.data.message.name[0]}</label>`;
+                                const parent = $('#name').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.no_anggota) {
-                                $('#no_anggota-error').show().html(err.response.data.message.no_anggota[0]);
-                            }
-                        }
-                        if ($('#nama-error').length === 0) {
-                            if (err.response.data.message.nama) {
-                                const message = `<label id="nama-error" class="validation-invalid-label" for="nama">${err.response.data.message.nama[0]}</label>`;
-                                const parent = $('#nama').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.nama) {
-                                $('#nama-error').show().html(err.response.data.message.nama[0]);
-                            }
-                        }
-                        if ($('#nik-error').length === 0) {
-                            if (err.response.data.message.nik) {
-                                const message = `<label id="nik-error" class="validation-invalid-label" for="nik">${err.response.data.message.nik[0]}</label>`;
-                                const parent = $('#nik').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.nik) {
-                                $('#nik-error').show().html(err.response.data.message.nik[0]);
-                            }
-                        }
-                        if ($('#phone_number-error').length === 0) {
-                            if (err.response.data.message.phone_number) {
-                                const message = `<label id="phone_number-error" class="validation-invalid-label" for="phone_number">${err.response.data.message.phone_number[0]}</label>`;
-                                const parent = $('#phone_number').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.phone_number) {
-                                $('#phone_number-error').show().html(err.response.data.message.phone_number[0]);
+                            if (err.response.data.message.name) {
+                                $('#name-error').show().html(err.response.data.message.name[0]);
                             }
                         }
                         if ($('#email-error').length === 0) {
@@ -246,26 +202,26 @@
                                 $('#email-error').show().html(err.response.data.message.email[0]);
                             }
                         }
-                        if ($('#lokasi_kerja-error').length === 0) {
-                            if (err.response.data.message.lokasi_kerja) {
-                                const message = `<label id="lokasi_kerja-error" class="validation-invalid-label" for="lokasi_kerja">${err.response.data.message.lokasi_kerja[0]}</label>`;
-                                const parent = $('#lokasi_kerja').parent();
+                        if ($('#password-error').length === 0) {
+                            if (err.response.data.message.password) {
+                                const message = `<label id="password-error" class="validation-invalid-label" for="password">${err.response.data.message.password[0]}</label>`;
+                                const parent = $('#password').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.lokasi_kerja) {
-                                $('#lokasi_kerja-error').show().html(err.response.data.message.lokasi_kerja[0]);
+                            if (err.response.data.message.password) {
+                                $('#password-error').show().html(err.response.data.message.password[0]);
                             }
                         }
-                        if ($('#jabatan-error').length === 0) {
-                            if (err.response.data.message.jabatan) {
-                                const message = `<label id="jabatan-error" class="validation-invalid-label" for="jabatan">${err.response.data.message.jabatan[0]}</label>`;
-                                const parent = $('#jabatan').parent();
+                        if ($('#role-error').length === 0) {
+                            if (err.response.data.message.role) {
+                                const message = `<label id="role-error" class="validation-invalid-label" for="role">${err.response.data.message.role[0]}</label>`;
+                                const parent = $('#role').parent();
                                 parent.append(message);
                             }
                         } else {
-                            if (err.response.data.message.jabatan) {
-                                $('#jabatan-error').show().html(err.response.data.message.jabatan[0]);
+                            if (err.response.data.message.role) {
+                                $('#role-error').show().html(err.response.data.message.role[0]);
                             }
                         }
                         if ($('#status-error').length === 0) {
@@ -324,7 +280,6 @@
                         className: 'btn btn-light action-refresh',
                         action: function(e, dt, node, config) {
                             dt.ajax.reload(null, false);
-                            getAnggotaSummary();
                         }
                     },
                     {
@@ -347,32 +302,44 @@
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('dashboard.list') }}",
+                ajax: {
+                    url: "{{ route('dashboard.list') }}",
+                    data: function(params) {
+                        params.keyword = $('#tbl-anggota_filter input[type="search"]').val();
+                    },
+                },
+                search: {
+                    return: true,
+                },
                 searchDelay: 800,
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'no_anggota', name: 'no_anggota'},
-                    {data: 'nama', name: 'nama'},
-                    {data: 'nik', name: 'nik'},
-                    {data: 'phone_number', name: 'phone_number'},
+                    {data: 'kode', name: 'kode'},
+                    {data: 'name', name: 'name'},
                     {data: 'email', name: 'email'},
-                    {data: 'lokasi_kerja', name: 'lokasi_kerja'},
-                    {data: 'jabatan', name: 'jabatan'},
+                    {data: 'user_type', name: 'user_type'},
+                    {data: 'role', name: 'role'},
                     {data: 'status', name: 'status', render: function(data, type, row, meta) {
                         switch (data) {
-                            case 'aktif':
+                            case 1:
+                            case true:
+                                text = 'Aktif';
                                 color = 'bg-blue';
                                 break;
-                            case 'tidak':
-                                color = 'bg-danger';
-                                break;
                             default:
+                                text = 'Non Aktif';
                                 color = 'bg-grey';
                                 break;
                         }
                         return `<div class="text-center">
-                            <span class="badge ${color}">${data}</span>
+                            <span class="badge ${color}">${text}</span>
                         </div>`;
+                    }},
+                    {data: 'createdAt', name: 'createdAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
+                    }},
+                    {data: 'updatedAt', name: 'updatedAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
                     }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
@@ -413,8 +380,6 @@
                     }
                 },
                 rules: {
-                    nik: {digits: true},
-                    phone_number: {digits: true},
                     email: {email: true},
                 },
                 submitHandler: async function () {
@@ -428,6 +393,7 @@
 
                 $('.modal-title').html('Tambah Anggota');
                 $('#form-anggota').trigger('reset');
+                $.uniform.update();
 
                 $('#modal_anggota').data({
                     'action': 'create',
@@ -439,14 +405,13 @@
                 const data = table.row($(me).parents('tr')).data();
 
                 $('.modal-title').html('Edit Anggota');
-                $('#no_anggota').val(data.no_anggota);
-                $('#nama').val(data.nama);
-                $('#nik').val(data.nik);
-                $('#phone_number').val(data.phone_number);
+                $('#kode').val(data.kode);
+                $('#name').val(data.name);
                 $('#email').val(data.email);
-                $('#lokasi_kerja').val(data.lokasi_kerja).trigger('change');
-                $('#jabatan').val(data.jabatan).trigger('change');
+                $('#user_type').val(data.user_type);
+                $('#role').val(data.role);
                 $('#status').val(data.status).trigger('change');
+                $.uniform.update();
 
                 $('#modal_anggota').data({
                     'action': 'edit',
@@ -478,7 +443,6 @@
                         axios.delete(url)
                         .then(() => {
                             table.row($(me).parents('tr')).remove().draw();
-                            getAnggotaSummary();
                             swalInit.fire(
                                 'Deleted!',
                                 'The action was succeed',

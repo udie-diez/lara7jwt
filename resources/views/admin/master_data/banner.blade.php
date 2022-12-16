@@ -18,13 +18,15 @@
             <table id="tbl-banner" class="table table-bordered table-hover datatable-show-all">
                 <thead>
                     <tr>
-                        <th>Nomor</th>
-                        <th>Judul</th>
-                        <th>Gambar</th>
-                        <th>Deskripsi</th>
-                        <th>Link</th>
-                        <th>Status</th>
-                        <th class="text-center">Aksi</th>
+                        <th>#</th>
+                        <th>{{ __('Judul') }}</th>
+                        <th>{{ __('Gambar') }}</th>
+                        <th>{{ __('Deskripsi') }}</th>
+                        <th>{{ __('Link') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Created at') }}</th>
+                        <th>{{ __('Updated at') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +39,7 @@
 @endsection
 
 @section('scripts')
+	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
@@ -166,7 +169,7 @@
                 columnDefs: [{
                     orderable: false,
                     width: 150,
-                    targets: [ 6 ]
+                    targets: [ 8 ]
                 }],
                 dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
                 language: {
@@ -218,7 +221,15 @@
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('banner.list') }}",
+                ajax: {
+                    url: "{{ route('banner.list') }}",
+                    data: function(params) {
+                        params.keyword = $('#tbl-anggota_filter input[type="search"]').val();
+                    },
+                },
+                search: {
+                    return: true,
+                },
                 searchDelay: 800,
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
@@ -234,6 +245,12 @@
                         return `<div class="text-center">
                             <span class="badge ${color}">${text}</span>
                         </div>`;
+                    }},
+                    {data: 'createdAt', name: 'createdAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
+                    }},
+                    {data: 'updatedAt', name: 'updatedAt', render: function(data, type, row, meta) {
+                        return moment(data).format('DD MMM YYYY HH:mm:ss');
                     }},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]

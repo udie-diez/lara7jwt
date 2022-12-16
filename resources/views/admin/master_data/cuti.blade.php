@@ -1,27 +1,27 @@
 @extends('layouts.app')
 
 @section('header_title')
-    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Jenis Cuti') }}
+    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Cuti') }}
 @endsection
 
 @section('breadcrumb')
     <div class="breadcrumb">
         <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
         <a href="#" class="breadcrumb-item">{{ __('Master Data') }}</a>
-        <span class="breadcrumb-item active">{{ __('Jenis Cuti') }}</span>
+        <span class="breadcrumb-item active">{{ __('Cuti') }}</span>
     </div>
 @endsection
 
 @section('content')
     <div class="content">
         <div class="card">
-            <table id="tbl-jenis-cuti" class="table table-bordered table-hover datatable-show-all">
+            <table id="tbl-cuti" class="table table-bordered table-hover datatable-show-all">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{ __('Nama alasan') }}</th>
-                        <th>{{ __('Memotong cuti tahunan') }}</th>
-                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('User ID') }}</th>
+                        <th>{{ __('Nama') }}</th>
+                        <th>{{ __('Jatah Cuti') }}</th>
                         <th>{{ __('Created at') }}</th>
                         <th>{{ __('Updated at') }}</th>
                         <th class="text-center">{{ __('Aksi') }}</th>
@@ -32,7 +32,7 @@
             </table>
         </div>
     </div>
-    @include('admin.master_data.modals.forms.jenis_cuti')
+    @include('admin.master_data.modals.forms.cuti')
 @endsection
 
 @section('scripts')
@@ -45,106 +45,115 @@
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/buttons.min.js') }}"></script>
-	<script src="{{ asset('themes/js/plugins/forms/styling/uniform.min.js') }}"></script>
     <script>
-        const submitJenisCuti = async function() {
+        // Defaults sweet confirm
+        var swalInit = swal.mixin({
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            cancelButtonClass: 'btn btn-light'
+        });
+        const submitCuti = async function() {
             event.preventDefault();
-            $('.error').html('');
-            const btnSubmitEl = $('#form-jenis-cuti .action-submit').html();
-            $('#form-jenis-cuti .action-submit').prop('disabled', true).html(spinner);
 
-            try {
-                const form = $(event.target);
-                const json = convertFormToJSON(form);
-                const modalData = $('#modal_jenis_cuti').data();
-                let resp = '';
-                if (modalData.action === 'create') {
-                    const url = "{{ route('jenisCuti.create') }}";
-                    resp = await axios.post(url, json);
-                } else {
-                    json['_method'] = 'put';
-                    const url = "{{ route('jenisCuti.update', 'rowid') }}"
-                        .replace('rowid', modalData.rowid);
-                    resp = await axios.post(url, json);
-                }
+            swalInit.fire({
+                title: 'Are you sure want to update?',
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                buttonsStyling: false
+            }).then(function (result) {
+                if (result.value) {
+                    $('.error').html('');
+                    const btnSubmitEl = $('#form-cuti .action-submit').html();
+                    $('#form-cuti .action-submit').prop('disabled', true).html(spinner);
 
-                if (resp.data.code === 200) {
-                    $('#modal_jenis_cuti').modal('hide');
-                    $('.action-refresh').click();
-                    noti.show({
-                        title: modalData.action === 'create' ? "Tambah Jenis Cuti" : "Edit Jenis Cuti",
-                        text: 'Berhasil disimpan'
+                    const form = $('#form-cuti')[0];
+                    const json = convertFormToJSON(form);
+                    const modalData = $('#modal_cuti').data();
+                    let url = '';
+                    if (modalData.action === 'create') {
+                        url = "{{ route('cuti.create') }}";
+                    } else {
+                        json['_method'] = 'put';
+                        url = "{{ route('cuti.update', 'rowid') }}"
+                            .replace('rowid', modalData.rowid);
+                    }
+                    axios.post(url, json)
+                    .then(function(resp) {
+                        debugger
+                        if (resp.data.code === 200) {
+                            $('#modal_cuti').modal('hide');
+                            $('.action-refresh').click();
+                            noti.show({
+                                title: modalData.action === 'create' ? "Tambah Cuti" : "Edit Cuti",
+                                text: 'Berhasil disimpan'
+                            });
+                        }
+                        $('#form-cuti .action-submit').prop('disabled', false).html(btnSubmitEl);
+                    })
+                    .catch(function(err) {
+                        $('#form-cuti .action-submit').prop('disabled', false).html(btnSubmitEl);
+                        // get response with a status code not in range 2xx
+                        if (err.response) {
+                            console.log(err.response.data);
+                            console.log(err.response.status);
+                            console.log(err.response.headers);
+                            if (typeof err.response.data.message === 'string') {
+                                const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
+                                $('.error').html(message);
+                                return;
+                            }
+                            if (typeof err.response.data.message === 'object') {
+                                if ($('#idUser-error').length === 0) {
+                                    if (err.response.data.message.idUser) {
+                                        const message = `<label id="idUser-error" class="validation-invalid-label" for="idUser">${err.response.data.message.idUser[0]}</label>`;
+                                        const parent = $('#idUser').parent();
+                                        parent.append(message);
+                                    }
+                                } else {
+                                    if (err.response.data.message.idUser) {
+                                        $('#idUser-error').show().html(err.response.data.message.idUser[0]);
+                                    }
+                                }
+                                if ($('#amount-error').length === 0) {
+                                    if (err.response.data.message.amount) {
+                                        const message = `<label id="amount-error" class="validation-invalid-label" for="amount">${err.response.data.message.amount[0]}</label>`;
+                                        const parent = $('#amount').parent();
+                                        parent.append(message);
+                                    }
+                                } else {
+                                    if (err.response.data.message.amount) {
+                                        $('#amount-error').show().html(err.response.data.message.amount[0]);
+                                    }
+                                }
+                            }
+                        }
+                        // no response
+                        else if (err.request) {
+                            console.log(err.request);
+                            const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.request}</span>`;
+                            $('.error').html(message);
+                        }
+                        // Something wrong in setting up the request
+                        else {
+                            console.log('Error', err.message);
+                            const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.message}</span>`;
+                            $('.error').html(message);
+                        }
+                        console.log(err.config);
                     });
                 }
-                $('#form-jenis-cuti .action-submit').prop('disabled', false).html(btnSubmitEl);
-            } catch (err) {
-                $('#form-jenis-cuti .action-submit').prop('disabled', false).html(btnSubmitEl);
-                // get response with a status code not in range 2xx
-                if (err.response) {
-                    console.log(err.response.data);
-                    console.log(err.response.status);
-                    console.log(err.response.headers);
-                    if (typeof err.response.data.message === 'string') {
-                        const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
-                        $('.error').html(message);
-                        return;
-                    }
-                    if (typeof err.response.data.message === 'object') {
-                        if ($('#description-error').length === 0) {
-                            if (err.response.data.message.description) {
-                                const message = `<label id="description-error" class="validation-invalid-label" for="description">${err.response.data.message.description[0]}</label>`;
-                                const parent = $('#description').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.description) {
-                                $('#description-error').show().html(err.response.data.message.description[0]);
-                            }
-                        }
-                        if ($('#isAnnualLeave-error').length === 0) {
-                            if (err.response.data.message.isAnnualLeave) {
-                                const message = `<label id="isAnnualLeave-error" class="validation-invalid-label" for="isAnnualLeave">${err.response.data.message.isAnnualLeave[0]}</label>`;
-                                const parent = $('#isAnnualLeave').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.isAnnualLeave) {
-                                $('#isAnnualLeave-error').show().html(err.response.data.message.isAnnualLeave[0]);
-                            }
-                        }
-                        if ($('#status-error').length === 0) {
-                            if (err.response.data.message.status) {
-                                const message = `<label id="status-error" class="validation-invalid-label" for="status">${err.response.data.message.status[0]}</label>`;
-                                const parent = $('#status').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.status) {
-                                $('#status-error').show().html(err.response.data.message.status[0]);
-                            }
-                        }
-                    }
+                else if (result.dismiss === swal.DismissReason.cancel) {
+                    swalInit.fire(
+                        'Cancelled',
+                        'The action was cancelled',
+                        'error'
+                    );
                 }
-                // no response
-                else if (err.request) {
-                    console.log(err.request);
-                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.request}</span>`;
-                    $('.error').html(message);
-                }
-                // Something wrong in setting up the request
-                else {
-                    console.log('Error', err.message);
-                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.message}</span>`;
-                    $('.error').html(message);
-                }
-                console.log(err.config);
-            }
+            });
         }
         $(function() {
-            // styled form input
-            $('.form-input-styled').uniform({
-                fileButtonClass: 'action btn bg-blue'
-            });
             // Setting datatable defaults
             $.extend( $.fn.dataTable.defaults, {
                 autoWidth: false,
@@ -161,16 +170,15 @@
                     paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
                 }
             });
-            var table = $('#tbl-jenis-cuti').DataTable({
+            var table = $('#tbl-cuti').DataTable({
                 buttons: [
                     {
                         text: '<i class="icon-file-plus" data-popup="tooltip" title="Tambah Data"></i>',
                         className: 'btn btn-light action-create',
                         action: function (e, dt, node, config) {
-                            $('.modal-title').html('Tambah Jenis Cuti');
-                            $('#modal_jenis_cuti form').trigger('reset');
-                            $.uniform.update();
-                            $('#modal_jenis_cuti').data({
+                            $('.modal-title').html('Tambah Cuti');
+                            $('#modal_cuti form').trigger('reset');
+                            $('#modal_cuti').data({
                                 'action': 'create',
                             }).modal('show');
                         }
@@ -203,7 +211,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('jenisCuti.list') }}"
+                    url: "{{ route('cuti.list') }}"
                 },
                 search: {
                     return: true,
@@ -211,21 +219,12 @@
                 searchDelay: 800,
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'description', name: 'description'},
-                    {data: 'isAnnualLeave', name: 'isAnnualLeave', render: function(data, type, row, meta) {
-                        let color = data == true || data == 1 ? 'bg-blue' : 'bg-danger';
-                        let text = data == true || data == 1 ? 'Ya' : 'Tidak';
-                        return `<div class="text-center">
-                            <span class="badge ${color}">${text}</span>
-                        </div>`;
+                    {data: 'userId', name: 'userId'},
+                    {data: null, name: 'name', render: function(data, type, row, meta) {
+                        let text = row.userId == {{ Session::get('users')['id'] }} ? "{{ Session::get('users')['name'] }}" : '';
+                        return text;
                     }},
-                    {data: 'status', name: 'status', render: function(data, type, row, meta) {
-                        let color = data == true || data == 1 ? 'bg-blue' : 'bg-danger';
-                        let text = data == true || data == 1 ? 'Aktif' : 'Tidak Aktif';
-                        return `<div class="text-center">
-                            <span class="badge ${color}">${text}</span>
-                        </div>`;
-                    }},
+                    {data: 'amount', name: 'amount'},
                     {data: 'createdAt', name: 'createdAt', render: function(data, type, row, meta) {
                         return moment(data).format('DD MMM YYYY HH:mm:ss');
                     }},
@@ -236,15 +235,15 @@
                 ]
             });
             // disable submit button until form is valid
-            $('#form-jenis-cuti input, #form-jenis-cuti select').on('change click blur keyup', function () {
-                if ($('#form-jenis-cuti').valid()) {
-                    $('#form-jenis-cuti .action-submit').prop('disabled', false);
+            $('#form-cuti input, #form-cuti select').on('change click blur keyup', function () {
+                if ($('#form-cuti').valid()) {
+                    $('#form-cuti .action-submit').prop('disabled', false);
                 } else {
-                    $('#form-jenis-cuti .action-submit').prop('disabled', true);
+                    $('#form-cuti .action-submit').prop('disabled', true);
                 }
             });
             // validation
-            $('#form-jenis-cuti').validate({
+            $('#form-cuti').validate({
                 ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
                 errorClass: 'validation-invalid-label',
                 successClass: 'validation-valid-label',
@@ -270,8 +269,16 @@
                         error.insertAfter(element);
                     }
                 },
+                rules: {
+                    amount: {
+                        digits: true,
+                    },
+                    sisa: {
+                        digits: true,
+                    },
+                },
                 submitHandler: async function () {
-                    submitJenisCuti();
+                    submitCuti();
                 }
             });
             $(document).on('click', '.action-edit', function() {
@@ -279,13 +286,15 @@
                 const rowid = $(me).data('rowid');
                 const data = table.row($(me).parents('tr')).data();
 
-                $('.modal-title').html('Edit Jenis Cuti');
-                $('#description').val(`${data.description}`);
-                $('#isAnnualLeave').val(`${data.isAnnualLeave}`).trigger('change');
-                $('#status').val(`${data.status}`).trigger('change');
-                $.uniform.update();
+                $('.modal-title').html('Edit Cuti');
+                $('#userId').val(`${data.userId}`);
+                const name = data.userId == {{ Session::get('users')['id'] }} ? "{{ Session::get('users')['name'] }}" : '';
+                $('#name').val(`${name}`);
+                $('#amount').val(`${data.amount}`);
+                const sisa = data.sisa ?? '';
+                $('#sisa').val(`${sisa}`);
 
-                $('#modal_jenis_cuti').data({
+                $('#modal_cuti').data({
                     'action': 'edit',
                     'rowid': rowid,
                     'data': data
@@ -294,12 +303,7 @@
             $(document).on('click', '.action-delete', function() {
                 const me = this;
                 const rowid = $(me).data('rowid');
-                // Defaults sweet confirm
-                var swalInit = swal.mixin({
-                    buttonsStyling: false,
-                    confirmButtonClass: 'btn btn-primary',
-                    cancelButtonClass: 'btn btn-light'
-                });
+
                 swalInit.fire({
                     title: 'Are you sure to delete?',
                     text: "You won't be able to revert this!",
@@ -310,7 +314,7 @@
                     buttonsStyling: false
                 }).then(function (result) {
                     if (result.value) {
-                        const url = "{{ route('jenisCuti.destroy', 'rowid') }}"
+                        const url = "{{ route('cuti.destroy', 'rowid') }}"
                             .replace('rowid', rowid);
                         axios.delete(url)
                         .then(() => {
