@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin\Report;
 use App\Exports\PresensiBulananUserExport;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 
 class PresensiBulananUserController extends Controller
 {
