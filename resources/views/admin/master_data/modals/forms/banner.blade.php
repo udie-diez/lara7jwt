@@ -1,5 +1,5 @@
 
-<div id="modal_banner" class="modal fade" tabindex="-1">
+<div id="modal_banner" class="modal fade" data-backdrop="static" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="form-banner">

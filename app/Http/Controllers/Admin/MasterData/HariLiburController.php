@@ -29,10 +29,6 @@ class HariLiburController extends Controller
      */
     public function list(Request $request)
     {
-        $date = Carbon::now('UTC');
-        $startDate = $date->copy()->startOfYear();
-        $endDate = $date->copy()->endOfYear();
-
         try {
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/holiday/byRange');
             $client = new \GuzzleHttp\Client();
@@ -42,8 +38,8 @@ class HariLiburController extends Controller
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
                 'query' => [
-                    'startDate' => $request->startDate ?? $startDate,
-                    'endDate' => $request->endDate ?? $endDate,
+                    'startDate' => $request->startDate,
+                    'endDate' => $request->endDate,
                 ],
             ]);
             $resp = json_decode($reqClient->getBody());
@@ -91,9 +87,8 @@ class HariLiburController extends Controller
             $request->all(),
             [
                 'year' => 'required|numeric',
-                'holidays' => 'required',
-                'holidays.*.date' => 'required|date_format:Y-m-d',
-                'holidays.*.description' => 'required|string',
+                'date.*' => 'required|date_format:Y-m-d',
+                'description.*' => 'required|string',
             ]
         );
 
@@ -104,6 +99,8 @@ class HariLiburController extends Controller
             ], 400);
         }
 
+        $mappedHolidays = $this->mapHolidays($request->all());
+
         try {
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/holiday/add');
             $client = new \GuzzleHttp\Client();
@@ -112,7 +109,7 @@ class HariLiburController extends Controller
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => $request->all(),
+                'json' => $mappedHolidays,
             ]);
             $resp = json_decode($reqClient->getBody());
             return response()->json($resp, 201);
@@ -201,7 +198,7 @@ class HariLiburController extends Controller
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
                 ],
-                'json' => $request->merge(['id' => $id]),
+                'json' => array_merge(['id' => $id], $request->all()),
             ]);
             $resp = json_decode($reqClient->getBody());
             return response()->json($resp, 200);
@@ -254,5 +251,21 @@ class HariLiburController extends Controller
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
+    }
+
+    protected function mapHolidays($request)
+    {
+        foreach ($request['date'] as $key => $value) {
+            $holidays[] = [
+                'id' => null,
+                'date' => $value,
+                'description' => $request['description'][$key],
+                'status' => true,
+            ];
+        }
+        return [
+            'year' => $request['year'],
+            'holidays' => $holidays,
+        ];
     }
 }

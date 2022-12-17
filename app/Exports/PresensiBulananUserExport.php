@@ -18,16 +18,16 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PresensiTahunanUserExport implements FromCollection, WithStrictNullComparison, WithColumnFormatting, WithCustomStartCell, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithMapping
+class PresensiBulananUserExport implements FromCollection, WithStrictNullComparison, WithColumnFormatting, WithCustomStartCell, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithMapping
 {
     protected $year;
-    protected $name;
+    protected $month;
     protected $tableData;
 
-    public function __construct(string $year, string $name, Collection $presensiUser)
+    public function __construct(string $year, string $month, Collection $presensiUser)
     {
         $this->year = $year;
-        $this->name = $name;
+        $this->month = $month;
         $this->tableData = $presensiUser;
     }
 
@@ -39,7 +39,7 @@ class PresensiTahunanUserExport implements FromCollection, WithStrictNullCompari
     public function headings(): array
     {
         return [
-            'Bulan', 'Hadir', 'Tepat Waktu', 'Terlambat',
+            'Nama User', 'Hadir', 'Tepat Waktu', 'Terlambat',
             'Pulang Cepat', 'Tidak Hadir', 'Normalisasi'
         ];
     }
@@ -47,7 +47,7 @@ class PresensiTahunanUserExport implements FromCollection, WithStrictNullCompari
     public function styles(Worksheet $sheet)
     {
         $sheet->mergeCells('A1:G1');
-        $sheet->setCellValue('A1', "{$this->year} ({$this->name})");
+        $sheet->setCellValue('A1', "{$this->month} {$this->year}");
         $sheet->getStyle('A1')->getFont()->setSize(16);
 
         $styleArray = [
@@ -92,7 +92,7 @@ class PresensiTahunanUserExport implements FromCollection, WithStrictNullCompari
     public function map($tableData): array
     {
         return [
-            $tableData['month'],
+            $tableData['name'],
             $tableData['total_present'],
             $tableData['total_ontime'],
             $tableData['total_late'],

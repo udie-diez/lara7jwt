@@ -45,6 +45,8 @@
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/tables/datatables/extensions/buttons.min.js') }}"></script>
+	<script src="{{ asset('themes/js/plugins/extensions/jquery_ui/interactions.min.js') }}"></script>
+	<script src="{{ asset('themes/js/plugins/forms/selects/select2.min.js') }}"></script>
     <script>
         // Defaults sweet confirm
         var swalInit = swal.mixin({
@@ -154,6 +156,54 @@
             });
         }
         $(function() {
+            // select2
+            $('#idUser').select2({
+                dropdownParent: $('#modal_cuti'),
+                ajax: {
+                    url: "{{ route('dashboard.list') }}",
+                    delay: 800,
+                    data: function(params) {
+                        return {
+                            keyword: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * 10) < data.recordsTotal
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                },
+                minimumInputLength: 1,
+                templateResult: function(params) {
+                    if (params.loading) {
+                        return params.text;
+                    }
+
+                    let markup = `
+                        <div class="select2-result-user clearfix">
+                            <div class="select2-result-user__meta">
+                                <div class="select2-result-user__name">${params.name ?? 'unknown'}</div>
+                                <div class="select2-result-user__email">${params.email ?? 'unknown'}</div>
+                                <div class="select2-result-user__role">${params.role ?? 'unknown'}</div>
+                            </div>
+                        </div>
+                    `;
+
+                    return markup;
+                },
+                templateSelection: function(params) {
+                    return params.name || params.text;
+                }
+            });
             // Setting datatable defaults
             $.extend( $.fn.dataTable.defaults, {
                 autoWidth: false,
@@ -178,6 +228,9 @@
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Cuti');
                             $('#modal_cuti form').trigger('reset');
+                            const data = {id: '', text: 'Nama Pengurus'};
+                            const newOption = new Option(data.text, data.id, false, false);
+                            $('#idUser').append(newOption).trigger('change');
                             $('#modal_cuti').data({
                                 'action': 'create',
                             }).modal('show');
@@ -287,9 +340,9 @@
                 const data = table.row($(me).parents('tr')).data();
 
                 $('.modal-title').html('Edit Cuti');
-                $('#userId').val(`${data.userId}`);
-                const name = data.userId == {{ Session::get('users')['id'] }} ? "{{ Session::get('users')['name'] }}" : '';
-                $('#name').val(`${name}`);
+                const obj = {id: data.userId, text: data.name};
+                const newOption = new Option(obj.text, obj.id, false, false);
+                $('#idUser').append(newOption).trigger('change');
                 $('#amount').val(`${data.amount}`);
                 const sisa = data.sisa ?? '';
                 $('#sisa').val(`${sisa}`);

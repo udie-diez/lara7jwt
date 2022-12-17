@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -18,17 +19,17 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PresensiTahunanUserExport implements FromCollection, WithStrictNullComparison, WithColumnFormatting, WithCustomStartCell, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithMapping
+class CutiUserExport implements FromCollection, WithStrictNullComparison, WithColumnFormatting, WithCustomStartCell, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithMapping
 {
     protected $year;
     protected $name;
     protected $tableData;
 
-    public function __construct(string $year, string $name, Collection $presensiUser)
+    public function __construct(string $year, string $name, Collection $cutiUser)
     {
         $this->year = $year;
         $this->name = $name;
-        $this->tableData = $presensiUser;
+        $this->tableData = $cutiUser;
     }
 
     public function startCell(): string
@@ -39,8 +40,8 @@ class PresensiTahunanUserExport implements FromCollection, WithStrictNullCompari
     public function headings(): array
     {
         return [
-            'Bulan', 'Hadir', 'Tepat Waktu', 'Terlambat',
-            'Pulang Cepat', 'Tidak Hadir', 'Normalisasi'
+            'Tanggal Pengajuan', 'Jenis Cuti', 'Alasan', 'Durasi',
+            'Cuti Tahunan Terpakai', 'Lampiran', 'Status'
         ];
     }
 
@@ -91,14 +92,16 @@ class PresensiTahunanUserExport implements FromCollection, WithStrictNullCompari
 
     public function map($tableData): array
     {
+        $duration = explode(',', $tableData['date']);
+
         return [
-            $tableData['month'],
-            $tableData['total_present'],
-            $tableData['total_ontime'],
-            $tableData['total_late'],
-            $tableData['total_early'],
-            $tableData['total_cuti'],
-            $tableData['total_normal'],
+            $tableData['createdAt'] ? Carbon::parse($tableData['createdAt'])->tz('Asia/Jakarta')->format('Y-m-d H:i:s') : 'Invalid date',
+            $tableData['jenis_cuti'],
+            $tableData['keterangan'],
+            count($duration),
+            $tableData['annualLeaveSpend'],
+            $tableData['dokumen'],
+            $tableData['is_approve'],
         ];
     }
 

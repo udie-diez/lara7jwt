@@ -1,5 +1,5 @@
 
-<div id="modal_hari_libur" class="modal fade" tabindex="-1">
+<div id="modal_hari_libur" class="modal fade" data-backdrop="static" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="form-hari-libur">
@@ -14,14 +14,21 @@
                     <div class="error"></div>
 
                     <div class="form-group row">
-                        <label for="date" class="col-form-label col-lg-2">Tanggal</label>
+                        <label for="date" class="col-form-label col-lg-2">{{ __('Tanggal') }}</label>
                         <div class="col-lg-10">
-                            <input type="text" id="date" name="date" class="form-control" placeholder="{{ __('Tanggal') }}" autofocus required>
+                            <div class="input-group">
+                                <span class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="icon-calendar22"></i>
+                                    </span>
+                                </span>
+                                <input type="text" id="date" name="date" class="form-control datepicker-single" placeholder="{{ __('Tanggal') }}" autofocus required autocomplete="off">
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="description" class="col-form-label col-lg-2">Keterangan</label>
+                        <label for="description" class="col-form-label col-lg-2">{{ __('Keterangan') }}</label>
                         <div class="col-lg-10">
                             <textarea id="description" name="description" class="form-control" placeholder="{{ __('Keterangan') }}" required></textarea>
                         </div>

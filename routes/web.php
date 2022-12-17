@@ -124,10 +124,24 @@ Route::group([
         Route::put('update/{id}', 'Admin\MasterData\AppVersionController@update')->name('appVersion.update');
         Route::delete('delete/{id}', 'Admin\MasterData\AppVersionController@destroy')->name('appVersion.destroy');
     });
-});
 
-Route::group([
-    'prefix' => 'laporan',
-], function () {
-    Route::get('presensi-tahunan-user', 'Admin\Report\PresensiTahunanUserController@export')->name('export.presensiTahunanUser');
+    Route::group([
+        'prefix' => 'laporan',
+    ], function () {
+        Route::get('presensi-tahunan-user', 'Admin\Report\PresensiTahunanUserController@index')->name('report.presensiTahunanUser');
+        Route::get('presensi-tahunan-user/list', 'Admin\Report\PresensiTahunanUserController@list')->name('report.presensiTahunanUser.list');
+        Route::get('presensi-tahunan-user/download', 'Admin\Report\PresensiTahunanUserController@export')->name('report.presensiTahunanUser.download');
+
+        Route::get('presensi-bulanan-user', 'Admin\Report\PresensiBulananUserController@index')->name('report.presensiBulananUser');
+        Route::get('presensi-bulanan-user/list', 'Admin\Report\PresensiBulananUserController@list')->name('report.presensiBulananUser.list');
+        Route::get('presensi-bulanan-user/download', 'Admin\Report\PresensiBulananUserController@export')->name('report.presensiBulananUser.download');
+
+        Route::get('presensi-user', 'Admin\Report\PresensiUserController@index')->name('report.presensiUser');
+        Route::get('presensi-user/list', 'Admin\Report\PresensiUserController@list')->name('report.presensiUser.list');
+        Route::get('presensi-user/download', 'Admin\Report\PresensiUserController@export')->name('report.presensiUser.download');
+
+        Route::get('cuti-user', 'Admin\Report\CutiUserController@index')->name('report.cutiUser');
+        Route::get('cuti-user/list', 'Admin\Report\CutiUserController@list')->name('report.cutiUser.list');
+        Route::get('cuti-user/download', 'Admin\Report\CutiUserController@export')->name('report.cutiUser.download');
+    });
 });

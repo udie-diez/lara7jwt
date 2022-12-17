@@ -1,5 +1,5 @@
 
-<div id="modal_cuti" class="modal fade" tabindex="-1">
+<div id="modal_cuti" class="modal fade" data-backdrop="static" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="form-cuti">
@@ -14,17 +14,18 @@
                     <div class="error"></div>
 
                     <div class="form-group row">
-                        <label for="name" class="col-form-label col-lg-2">Nama pengurus</label>
-                        <div class="col-lg-10">
-                            <input type="hidden" id="idUser" name="idUser" class="form-control" value="{{ Session::get('users')['id'] }}">
-                            <input type="text" id="name" name="name" class="form-control" placeholder="{{ __('Nama pengurus') }}" value="{{ Session::get('users')['name'] }}" readonly>
+                        <label for="idUser" class="col-form-label col-lg-4">{{ __('Nama Pengurus') }}</label>
+                        <div class="col-lg-8">
+                            <select id="idUser" name="idUser" class="form-control" placeholder="{{ __('Nama Pengurus') }}" data-fouc autofocus required>
+                                <option value="" selected>{{ __('Nama Pengurus') }}</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="amount" class="col-form-label col-lg-2">Jatah cuti</label>
                         <div class="col-lg-10">
-                            <input type="text" id="amount" name="amount" class="form-control" placeholder="{{ __('Jatah cuti') }}" autofocus required>
+                            <input type="text" id="amount" name="amount" class="form-control" placeholder="{{ __('Jatah cuti') }}" required>
                         </div>
                     </div>
 

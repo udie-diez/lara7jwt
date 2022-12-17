@@ -1,6 +1,5 @@
 {{-- Main navigation --}}
 <div class="card card-sidebar-mobile">
-    @php $parentClassName = ''; @endphp
     <ul class="nav nav-sidebar" data-nav-type="accordion">
 
         <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
@@ -81,18 +80,18 @@
                 <li class="nav-item"><a href="#" class="nav-link">Layout 5</a></li>
             </ul>
         </li>
-        @php $parentLapClassName = ''; @endphp
+        @php $parentReportClassName = 'nav-item-open'; @endphp
         @if (Request::segment(1) == 'laporan')
-            @php $parentLapClassName = 'nav-item-open'; @endphp
+            @php $parentReportClassName = 'nav-item-open'; @endphp
         @endif
-        <li class="nav-item nav-item-submenu {{ $parentLapClassName }}">
+        <li class="nav-item nav-item-submenu {{ $parentReportClassName }}">
             <a href="#" class="nav-link"><i class="icon-file-stats text-success"></i> <span>Laporan</span></a>
 
-            <ul class="nav nav-group-sub" data-submenu-title="Laporan" @if ($parentLapClassName) {{ 'style=display:block;' }} @endif>
-                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'presensi-tahunan-user') {{ 'active' }} @endif">Presensi Tahunan User</a></li>
-                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'presensi-bulanan-all-user') {{ 'active' }} @endif">Presensi Bulanan All User</a></li>
-                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'presensi-user') {{ 'active' }} @endif">Presensi User</a></li>
-                <li class="nav-item"><a href="#" class="nav-link @if (Request::segment(2) == 'cuti-user') {{ 'active' }} @endif">Cuti User</a></li>
+            <ul class="nav nav-group-sub" data-submenu-title="Laporan" @if ($parentReportClassName) {{ 'style=display:block;' }} @endif>
+                <li class="nav-item"><a href="{{ route('report.presensiTahunanUser') }}" class="nav-link @if (Request::segment(2) == 'presensi-tahunan-user') {{ 'active' }} @endif">Presensi Tahunan User</a></li>
+                <li class="nav-item"><a href="{{ route('report.presensiBulananUser') }}" class="nav-link @if (Request::segment(2) == 'presensi-bulanan-user') {{ 'active' }} @endif">Presensi Bulanan User</a></li>
+                <li class="nav-item"><a href="{{ route('report.presensiUser') }}" class="nav-link @if (Request::segment(2) == 'presensi-user') {{ 'active' }} @endif">Presensi User</a></li>
+                <li class="nav-item"><a href="{{ route('report.cutiUser') }}" class="nav-link @if (Request::segment(2) == 'cuti-user') {{ 'active' }} @endif">Cuti User</a></li>
             </ul>
         </li>
         <li class="nav-item nav-item-submenu">
