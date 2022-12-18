@@ -229,7 +229,7 @@
                             $('.modal-title').html('Tambah Cuti');
                             $('#modal_cuti form').trigger('reset');
                             const data = {id: '', text: 'Nama Pengurus'};
-                            const newOption = new Option(data.text, data.id, false, false);
+                            const newOption = new Option(data.text, data.id, true, true);
                             $('#idUser').append(newOption).trigger('change');
                             $('#modal_cuti').data({
                                 'action': 'create',
@@ -273,10 +273,7 @@
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'userId', name: 'userId'},
-                    {data: null, name: 'name', render: function(data, type, row, meta) {
-                        let text = row.userId == {{ Session::get('users')['id'] }} ? "{{ Session::get('users')['name'] }}" : '';
-                        return text;
-                    }},
+                    {data: 'user.name', name: 'user.name'},
                     {data: 'amount', name: 'amount'},
                     {data: 'createdAt', name: 'createdAt', render: function(data, type, row, meta) {
                         return moment(data).format('DD MMM YYYY HH:mm:ss');
@@ -340,8 +337,8 @@
                 const data = table.row($(me).parents('tr')).data();
 
                 $('.modal-title').html('Edit Cuti');
-                const obj = {id: data.userId, text: data.name};
-                const newOption = new Option(obj.text, obj.id, false, false);
+                const obj = {id: data.userId, text: data.user.name};
+                const newOption = new Option(obj.text, obj.id, true, true);
                 $('#idUser').append(newOption).trigger('change');
                 $('#amount').val(`${data.amount}`);
                 const sisa = data.sisa ?? '';
