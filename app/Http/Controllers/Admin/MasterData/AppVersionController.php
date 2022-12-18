@@ -85,7 +85,6 @@ class AppVersionController extends Controller
                 'version' => 'required',
                 'description' => 'nullable|string',
                 'os' => 'required|string',
-                'link' => 'required|string|url',
                 'build' => 'nullable',
                 'file' => 'required|file|max:2000',
             ]
@@ -111,7 +110,6 @@ class AppVersionController extends Controller
                     ['name' => 'version', 'contents' => $request->title],
                     ['name' => 'description', 'contents' => $request->description],
                     ['name' => 'os', 'contents' => $request->os],
-                    ['name' => 'link', 'contents' => $request->link],
                     ['name' => 'build', 'contents' => $request->build],
                     [
                         'name' => 'file',
@@ -188,7 +186,6 @@ class AppVersionController extends Controller
                 'version' => 'required',
                 'description' => 'nullable|string',
                 'os' => 'required|string',
-                'link' => 'required|string|url',
                 'build' => 'nullable',
                 'file' => 'required|file|max:2000',
             ]
@@ -215,7 +212,6 @@ class AppVersionController extends Controller
                     ['name' => 'version', 'contents' => $request->title],
                     ['name' => 'description', 'contents' => $request->description],
                     ['name' => 'os', 'contents' => $request->os],
-                    ['name' => 'link', 'contents' => $request->link],
                     ['name' => 'build', 'contents' => $request->build],
                     [
                         'name' => 'file',
