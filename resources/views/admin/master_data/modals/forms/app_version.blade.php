@@ -50,13 +50,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label for="link" class="col-form-label col-lg-2">Link</label>
-                        <div class="col-lg-10">
-                            <input type="url" id="link" name="link" class="form-control" placeholder="{{ __('Link') }}" required>
-                        </div>
-                    </div>
-
                 </div>
 
                 <div class="modal-footer">

@@ -62,7 +62,6 @@
                 formData.append('file', $('#file')[0].files[0]);
                 formData.append('version', $('#version').val());
                 formData.append('description', $('#description').val());
-                formData.append('link', $('#link').val());
                 formData.append('build', $('#build').val());
 
                 const modalData = $('#modal_app_version').data();
@@ -127,17 +126,6 @@
                         } else {
                             if (err.response.data.message.version) {
                                 $('#version-error').show().html(err.response.data.message.version[0]);
-                            }
-                        }
-                        if ($('#link-error').length === 0) {
-                            if (err.response.data.message.link) {
-                                const message = `<label id="link-error" class="validation-invalid-label" for="link">${err.response.data.message.link[0]}</label>`;
-                                const parent = $('#link').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.link) {
-                                $('#link-error').show().html(err.response.data.message.link[0]);
                             }
                         }
                     }
@@ -301,7 +289,6 @@
                 $('#os').val(`${data.os}`);
                 $('#version').val(`${data.version}`);
                 $('#description').val(`${data.description}`);
-                $('#link').val(`${data.link}`);
                 $('#build').val(`${data.build}`);
                 $.uniform.update();
 
