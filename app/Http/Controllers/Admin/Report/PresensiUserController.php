@@ -14,7 +14,14 @@ class PresensiUserController extends Controller
 {
     public function index()
     {
-        return view('admin.report.presensi');
+        $tag = [
+            'menu' => 'Laporan',
+            'submenu' => 'Presensi User',
+            'judul' => 'PRESENSI USER',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.report.presensi', ['tag' => $tag]);
     }
 
     public function list(Request $request)
@@ -46,6 +53,7 @@ class PresensiUserController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/absen/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

@@ -1,21 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.home')
 
-@section('header_title')
-    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Cuti') }}
-@endsection
-
-@section('breadcrumb')
-    <div class="breadcrumb">
-        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
-        <a href="#" class="breadcrumb-item">{{ __('Master Data') }}</a>
-        <span class="breadcrumb-item active">{{ __('Cuti') }}</span>
-    </div>
-@endsection
-
-@section('content')
-    <div class="content">
-        <div class="card">
-            <table id="tbl-cuti" class="table table-bordered table-hover datatable-show-all">
+@section('maincontent')
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">{{$tag['judul']}}</h5>
+        </div>
+        <div class="card-body">
+            <table id="tbl-cuti" class="table datatable-basic table-hover datatable-show-all">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -33,9 +24,10 @@
         </div>
     </div>
     @include('admin.master_data.modals.forms.cuti')
-@endsection
 
-@section('scripts')
+    <script src="{{ asset('themes/js/plugins/notifications/pnotify.min.js') }}"></script>
+    <script src="{{ asset('themes/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+    <script src="{{ asset('themes/js/main/axios.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
@@ -224,7 +216,7 @@
                 buttons: [
                     {
                         text: '<i class="icon-file-plus" data-popup="tooltip" title="Tambah Data"></i>',
-                        className: 'btn btn-light action-create',
+                        className: 'btn btn-default action-create',
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Cuti');
                             $('#modal_cuti form').trigger('reset');
@@ -238,7 +230,7 @@
                     },
                     {
                         text: '<i class="icon-loop3" data-popup="tooltip" title="Refresh"></i>',
-                        className: 'btn btn-light action-refresh',
+                        className: 'btn btn-default action-refresh',
                         action: function(e, dt, node, config) {
                             dt.ajax.reload(null, false);
                         }
@@ -246,7 +238,7 @@
                     {
                         extend: 'excelHtml5',
                         text: '<i class="icon-file-excel" data-popup="tooltip" title="Export to Excel"></i>',
-                        className: 'btn btn-light',
+                        className: 'btn btn-default',
                         exportOptions: {
                             columns: ':visible'
                         }
@@ -254,7 +246,7 @@
                     {
                         extend: 'pdfHtml5',
                         text: '<i class="icon-file-pdf" data-popup="tooltip" title="Export to PDF"></i>',
-                        className: 'btn btn-light',
+                        className: 'btn btn-default',
                         exportOptions: {
                             columns: ':visible'
                         }

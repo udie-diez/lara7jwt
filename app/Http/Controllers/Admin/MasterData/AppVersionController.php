@@ -17,7 +17,14 @@ class AppVersionController extends Controller
      */
     public function index()
     {
-        return view('admin.master_data.app_version');
+        $tag = [
+            'menu' => 'Master Data',
+            'submenu' => 'APP Version',
+            'judul' => 'APP VERSION',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.master_data.app_version', ['tag' => $tag]);
     }
 
     /**
@@ -32,6 +39,7 @@ class AppVersionController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/appversion');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -102,6 +110,7 @@ class AppVersionController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/appversion/add');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -148,6 +157,7 @@ class AppVersionController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/appversion/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -203,6 +213,7 @@ class AppVersionController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/appversion/update');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -250,6 +261,7 @@ class AppVersionController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/appversion/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

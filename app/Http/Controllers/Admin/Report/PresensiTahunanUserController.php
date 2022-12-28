@@ -14,7 +14,14 @@ class PresensiTahunanUserController extends Controller
 {
     public function index()
     {
-        return view('admin.report.presensiTahunan');
+        $tag = [
+            'menu' => 'Laporan',
+            'submenu' => 'Presensi Tahunan',
+            'judul' => 'PRESENSI TAHUNAN',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.report.presensiTahunan', ['tag' => $tag]);
     }
 
     public function list(Request $request)
@@ -47,6 +54,7 @@ class PresensiTahunanUserController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/absen/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -81,6 +89,7 @@ class PresensiTahunanUserController extends Controller
                 return Carbon::parse($item->date)->tz('Asia/Jakarta')->format('F');
             })
             ->toArray();
+        $presensiUser = [];
         $i = 0;
         foreach ($collection as $key => $item) {
             $total_present = 0;

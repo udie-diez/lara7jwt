@@ -17,7 +17,14 @@ class BannerController extends Controller
      */
     public function index()
     {
-        return view('admin.master_data.banner');
+        $tag = [
+            'menu' => 'Master Data',
+            'submenu' => 'Banner',
+            'judul' => 'BANNER',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.master_data.banner', ['tag' => $tag]);
     }
 
     /**
@@ -32,6 +39,7 @@ class BannerController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/banner/all');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -106,6 +114,7 @@ class BannerController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/banner');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -152,6 +161,7 @@ class BannerController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/banner/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -207,6 +217,7 @@ class BannerController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/banner/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -253,6 +264,7 @@ class BannerController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/banner/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

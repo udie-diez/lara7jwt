@@ -1,195 +1,147 @@
-@extends('welcome')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
-    <div class="content d-flex justify-content-center align-items-center">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>KopKar Trendy - Login</title>
 
-        {{-- Login card --}}
-        <form class="login-form form-validate" action="{{ route('login') }}">
-            @csrf
+	<!-- Global stylesheets -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<link rel="icon" type="image/png" href="{{ url('/') }}/assets/images/icontelkom.png" />
+	<link href="{{ url('/') }}/global_assets/css/icons/icomoon/styles.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url('/') }}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url('/') }}/assets/css/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url('/') }}/assets/css/layout.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url('/') }}/assets/css/components.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url('/') }}/assets/css/colors.min.css" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
 
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="text-center mb-3">
-                        <i class="icon-reading icon-2x text-slate-300 border-slate-300 border-3 rounded-round p-3 mb-3 mt-1"></i>
-                        <h5 class="mb-0">{{ __('Login to your account') }}</h5>
-                        <span class="d-block text-muted">{{ __('Your credentials') }}</span>
-                    </div>
+	<!-- Core JS files -->
+	<script src="{{ url('/') }}/global_assets/js/main/jquery.min.js"></script>
+	<script src="{{ url('/') }}/global_assets/js/main/bootstrap.bundle.min.js"></script>
+	<script src="{{ url('/') }}/global_assets/js/plugins/loaders/blockui.min.js"></script>
+	<!-- /core JS files -->
 
-                    <div class="error"></div>
+	<!-- Theme JS files -->
+	<script src="{{ url('/') }}/global_assets/js/plugins/forms/styling/uniform.min.js"></script>
 
-                    <div class="form-group form-group-feedback form-group-feedback-left">
-                        <input type="text" class="form-control" id="email" name="email" placeholder="{{ __('Email address') }}" required>
-                        <div class="form-control-feedback">
-                            <i class="icon-user text-muted"></i>
-                        </div>
-                    </div>
+	<script src="{{ url('/') }}/assets/js/app.js"></script>
+	<script src="{{ url('/') }}/global_assets/js/demo_pages/login.js"></script>
+	<!-- /theme JS files -->
 
-                    <div class="form-group form-group-feedback form-group-feedback-left">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="{{ __('Password') }}" required>
-                        <div class="form-control-feedback toggle-password hide-password">
-                            <i class="icon-lock2 text-muted"></i>
-                        </div>
-                    </div>
+	<style>
+		body {
+			background-image: url("{{ url('/') }}/assets/images/background.jpg?v=1.1");
+			background-repeat: no-repeat;
+			background-size: cover;
+		}
 
-                    {{-- <div class="form-group d-flex align-items-center">
-                        <a href="{{ route('forgot') }}" class="ml-auto">{{ __('Forgot password?') }}</a>
-                    </div> --}}
+		.uniform-checker {
+			background: #fbfaf8de;
+		}
+	</style>
+</head>
 
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">{{ __('Sign in') }} <i class="icon-circle-right2 ml-2"></i></button>
-                    </div>
+<body>
 
-                    {{-- <div class="form-group text-center text-muted content-divider">
-                        <span class="px-2">{{ __("Don't have an account?") }}</span>
-                    </div>
+	<!-- Page content -->
+	<div class="page-content">
 
-                    <div class="form-group">
-                        <a href="{{ route('register') }}" class="btn btn-light btn-block">{{ __('Sign up') }}</a>
-                    </div>
+		<!-- Main content -->
+		<div class="content-wrapper">
 
-                    <span class="form-text text-center text-muted">By continuing, you're confirming that you've read our <a href="#">Terms &amp; Conditions</a> and <a href="#">Cookie Policy</a></span> --}}
-                </div>
-            </div>
-        </form>
-        {{-- /Login card --}}
+			<!-- Content area -->
+			<div class="content d-flex justify-content-center align-items-center">
 
-    </div>
-@endsection
+				<!-- Login card -->
+				<form method="POST" action="{{ route('login') }}">
+					@csrf
+					<div class="card mb-0" style="background-color: #0048a2a8;">
+						<div class="card-body">
+							<div class="text-center mb-3">
+								<!-- <img src="{{ url('/') }}/global_assets/images/trendy.png" alt="" width="100px"> -->
 
-@section('styles')
-    <style>.toggle-password{cursor: pointer;}</style>
-@endsection
+								<span class="text-white">
+									<h1 style="margin-top:20px!important">Kopkar Trendy</h1>
+								</span>
+								<span>
+									<h5 style="color:#d2d2d2;">Please sign in</h5>
+								</span>
+							</div>
 
-@section('scripts')
-    <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
-    <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
-    <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
-    <script>
-        const login = async function () {
-            event.preventDefault();
-            $('.error').html('');
-            const btnLoginEl = $('.login-form button').html();
-            $('.login-form button').prop('disabled', true).html(spinner);
+							<div class="form-group form-group-feedback form-group-feedback-left">
+								<input type="hidden" name="status" value="1">
+								<input id="email" type="email" placeholder="E-mail" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" style="background: #fbfaf8de;" required autocomplete="email" autofocus>
+								<div class="form-control-feedback">
+									<i class="icon-user text-muted" style="left: 5px;"></i>
+								</div>
+							</div>
 
-            try {
-                const form = $(event.target);
-                const json = convertFormToJSON(form);
-                const resp = await axios.post("{{ route('login.post') }}", json);
-                $('.login-form button').prop('disabled', false).html(btnLoginEl);
-                noti.showProgressRedirect("{{ route('dashboard') }}");
-            } catch (err) {
-                $('.login-form button').prop('disabled', false).html(btnLoginEl);
-                // get response with a status code not in range 2xx
-                if (err.response) {
-                    console.log(err.response.data);
-                    console.log(err.response.status);
-                    console.log(err.response.headers);
-                    if (typeof err.response.data.message === 'string') {
-                        const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.response.data.message}</span>`;
-                        $('.error').html(message);
-                        return;
-                    }
-                    if (typeof err.response.data.message === 'object') {
-                        if ($('#email-error').length === 0) {
-                            if (err.response.data.message.email) {
-                                const message = `<label id="email-error" class="validation-invalid-label" for="email">${err.response.data.message.email[0]}</label>`;
-                                const parent = $('#email').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.email) {
-                                $('#email-error').show().html(err.response.data.message.email[0]);
-                            }
-                        }
-                        if ($('#password-error').length === 0) {
-                            if (err.response.data.message.password) {
-                                const message = `<label id="password-error" class="validation-invalid-label" for="password">${err.response.data.message.password[0]}</label>`;
-                                const parent = $('#password').parent();
-                                parent.append(message);
-                            }
-                        } else {
-                            if (err.response.data.message.password) {
-                                $('#password-error').show().html(err.response.data.message.password[0]);
-                            }
-                        }
-                    }
-                }
-                // no response
-                else if (err.request) {
-                    console.log(err.request);
-                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.request}</span>`;
-                    $('.error').html(message);
-                }
-                // Something wrong in setting up the request
-                else {
-                    console.log('Error', err.message);
-                    const message = `<span class="d-block mt-0 mb-3 validation-invalid-label">${err.message}</span>`;
-                    $('.error').html(message);
-                }
-                console.log(err.config);
-            }
-        }
+							<div class="form-group form-group-feedback form-group-feedback-left">
+								<input id="password" type="password" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password" style="background: #fbfaf8de;" required autocomplete="current-password">
+								<div class="form-control-feedback">
+									<i class="icon-lock2 text-muted" style="left: 5px;"></i>
+								</div>
+								@if (\Session::has('error'))
+								<span class="bg-warning text-white mt-3" role="alert">
+									<strong>{!! \Session::get('error') !!}</strong>
+								</span>
+								@endif
+								@error('email')
+								<span class="bg-warning text-white mt-3" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
+								@error('password')
+								<span class="bg-warning text-white mt-3" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
 
-        $(function () {
-            // disable submit button until form is valid
-            $('.login-form input').on('blur keyup', function () {
-                if ($('.login-form').valid()) {
-                    $('.login-form button').prop('disabled', false);
-                } else {
-                    $('.login-form button').prop('disabled', true);
-                }
-            });
-            // toggle password input
-            $('.toggle-password').on('click', function () {
-                if (!$(this).hasClass('show-password')) {
-                    $(this).removeClass('hide-password').addClass('show-password');
-                    $(this).siblings('input').attr('type', 'text');
-                    $(this).find('i').removeClass('icon-lock2').addClass('icon-unlocked2');
-                } else {
-                    $(this).removeClass('show-password').addClass('hide-password');
-                    $(this).siblings('input').attr('type', 'password');
-                    $(this).find('i').removeClass('icon-unlocked2').addClass('icon-lock2');
-                }
-            });
-            // // add custom validation methods
-            // $.validator.addMethod("strongpassword", function (value, element) {
-            //     return this.optional(element) || /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).{8,}$/.test(value);
-            // }, "Passwords must be at least 8 characters long, 1 lowercase letter, 1 capital letter, 1 number, 1 special characters");
-            // validation
-            $('.login-form').validate({
-                ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
-                errorClass: 'validation-invalid-label',
-                successClass: 'validation-valid-label',
-                validClass: 'validation-valid-label',
-                highlight: function(element, errorClass) {
-                    $(element).removeClass(errorClass);
-                },
-                unhighlight: function(element, errorClass) {
-                    $(element).removeClass(errorClass);
-                },
-                // Different components require proper error label placement
-                errorPlacement: function(error, element) {
-                    // Input with icons and Select2
-                    if (element.parents().hasClass('form-group-feedback') || element.hasClass('select2-hidden-accessible')) {
-                        error.appendTo( element.parent() );
-                    }
-                    // Other elements
-                    else {
-                        error.insertAfter(element);
-                    }
-                },
-                rules: {
-                    email: {
-                        email: true
-                    },
-                    password: {
-                        minlength: 6
-                    }
-                },
-                submitHandler: async function () {
-                    login();
-                }
-            });
-        });
-    </script>
-@endsection
+							</div>
+
+							<div class="form-group">
+								<div class="form-check mb-0">
+									<label class="form-check-label text-white">
+										<input class="form-input-styled" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+										Remember
+									</label>
+
+									<span style="float: right;"><a class="text-white" href="{{ route('lupaPassword') }}"> Lupa Password </a></span>
+								</div>
+							</div>
+
+							<div class="style-msg errormsg clearfix">
+								<div class="text-danger" id="login_msg" style="display:none"> </div>
+							</div>
+
+							<div class="form-group">
+								<button id="btnSignin" type="submit" class="btn btn-block" style="background:#65a9da ; color:white">Masuk </button>
+
+							</div>
+							<div class="form-group text-center text-white">
+								<span>Untuk registrasi akun : </span>
+							</div>
+
+							<div class="form-group">
+								<a href="{{ action('RegisterCont@create') }}" class="btn btn-block" style="background: #f5a056;color:white">Daftar</a>
+							</div>
+							<span class="form-text text-center text-white">&copy; 2021. Kopkar Trendy PT. Telekomunikasi Indonesia</span>
+						</div>
+					</div>
+				</form>
+				<!-- /login card -->
+			</div>
+			<!-- /content area -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+</body>
+
+</html>

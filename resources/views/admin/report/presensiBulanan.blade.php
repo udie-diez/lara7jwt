@@ -1,52 +1,42 @@
-@extends('layouts.app')
+@extends('layouts.home')
 
-@section('header_title')
-    <span class="font-weight-semibold">{{ __('Laporan') }}</span> - {{ __('Presensi Bulanan User') }}
-@endsection
+@section('maincontent')
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">{{$tag['judul']}}</h5>
+        </div>
+        <div class="card-body">
+            <div class="error"></div>
 
-@section('breadcrumb')
-    <div class="breadcrumb">
-        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
-        <a href="#" class="breadcrumb-item">{{ __('Laporan') }}</a>
-        <span class="breadcrumb-item active">{{ __('Presensi Bulanan User') }}</span>
-    </div>
-@endsection
-
-@section('content')
-    <div class="content">
-        <div class="card">
-            <div class="card-body">
-                <div class="error"></div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group row">
-                            <label for="date" class="col-form-label col-lg-4">{{ __('Cari Tanggal') }}</label>
-                            <div class="col-lg-8">
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            <i class="icon-calendar22"></i>
-                                        </span>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group row">
+                        <label for="date" class="col-form-label col-lg-4">{{ __('Cari Tanggal') }}</label>
+                        <div class="col-lg-8">
+                            <div class="input-group">
+                                <span class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="icon-calendar22"></i>
                                     </span>
-                                    <input type="text" id="date" name="date" class="form-control" placeholder="{{ __('Cari Tanggal') }}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group row">
-                            <label for="" class="col-form-label col-lg-4"></label>
-                            <div class="col-lg-8">
-                                <button type="button" class="btn btn-primary action-find">
-                                    <i class="icon-search4 mr-2"></i> {{ __('Cari') }}
-                                </button>
+                                </span>
+                                <input type="text" id="date" name="date" class="form-control" placeholder="{{ __('Cari Tanggal') }}">
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group row">
+                        <label for="" class="col-form-label col-lg-4"></label>
+                        <div class="col-lg-8">
+                            <button type="button" class="btn btn-primary action-find">
+                                <i class="icon-search4 mr-2"></i> {{ __('Cari') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <table id="tbl-presensi" class="table table-bordered table-hover datatable-show-all">
+
+            <table id="tbl-presensi" class="table datatable-basic table-hover datatable-show-all">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -64,9 +54,10 @@
             </table>
         </div>
     </div>
-@endsection
 
-@section('scripts')
+    <script src="{{ asset('themes/js/plugins/notifications/pnotify.min.js') }}"></script>
+    <script src="{{ asset('themes/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+    <script src="{{ asset('themes/js/main/axios.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
@@ -120,7 +111,7 @@
                 buttons: [
                     {
                         text: `<i class="icon-file-excel mr-2"></i> {{ __('Download') }}`,
-                        className: 'btn btn-light action-download',
+                        className: 'btn btn-default action-download',
                     },
                 ],
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],

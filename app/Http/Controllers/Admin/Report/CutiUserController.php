@@ -13,7 +13,14 @@ class CutiUserController extends Controller
 {
     public function index()
     {
-        return view('admin.report.cuti');
+        $tag = [
+            'menu' => 'Laporan',
+            'submenu' => 'Cuti User',
+            'judul' => 'CUTI USER',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.report.cuti', ['tag' => $tag]);
     }
 
     public function list(Request $request)
@@ -43,6 +50,7 @@ class CutiUserController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/pengajuanCuti/byDate/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

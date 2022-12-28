@@ -17,7 +17,14 @@ class JenisCutiController extends Controller
      */
     public function index()
     {
-        return view('admin.master_data.jenis_cuti');
+        $tag = [
+            'menu' => 'Master Data',
+            'submenu' => 'Jenis Cuti',
+            'judul' => 'JENIS CUTI',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.master_data.jenis_cuti', ['tag' => $tag]);
     }
 
     /**
@@ -32,6 +39,7 @@ class JenisCutiController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/jenisCuti');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -98,6 +106,7 @@ class JenisCutiController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/jenisCuti/add');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -134,6 +143,7 @@ class JenisCutiController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/jenisCuti/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -186,6 +196,7 @@ class JenisCutiController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/jenisCuti/update');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -222,6 +233,7 @@ class JenisCutiController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/jenisCuti/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

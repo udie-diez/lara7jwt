@@ -1,53 +1,42 @@
-@extends('layouts.app')
+@extends('layouts.home')
 
-@section('header_title')
-    <span class="font-weight-semibold">{{ __('Master Data') }}</span> - {{ __('Hari Libur') }}
-@endsection
+@section('maincontent')
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">{{$tag['judul']}}</h5>
+        </div>
+        <div class="card-body">
+            <div class="error"></div>
 
-@section('breadcrumb')
-    <div class="breadcrumb">
-        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
-        <a href="#" class="breadcrumb-item">{{ __('Master Data') }}</a>
-        <span class="breadcrumb-item active">{{ __('Hari Libur') }}</span>
-    </div>
-@endsection
-
-@section('content')
-    <div class="content">
-        <div class="card">
-            <div class="card-body">
-                <div class="error"></div>
-
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group row">
-                            <label for="daterange" class="col-form-label col-lg-2">{{ __('Cari Tanggal') }}</label>
-                            <div class="col-lg-10">
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            <i class="icon-calendar22"></i>
-                                        </span>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group row">
+                        <label for="daterange" class="col-form-label col-lg-2">{{ __('Cari Tanggal') }}</label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <span class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="icon-calendar22"></i>
                                     </span>
-                                    <input type="text" id="daterange" name="daterange" class="form-control datepicker" placeholder="{{ __('Cari Tanggal') }}">
-                                </div>
+                                </span>
+                                <input type="text" id="daterange" name="daterange" class="form-control datepicker" placeholder="{{ __('Cari Tanggal') }}">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group row">
-                            <label for="" class="col-form-label col-lg-4"></label>
-                            <div class="col-lg-8">
-                                <button type="button" class="btn btn-primary action-find">
-                                    <i class="icon-search4 mr-2"></i> {{ __('Cari') }}
-                                </button>
-                            </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group row">
+                        <label for="" class="col-form-label col-lg-4"></label>
+                        <div class="col-lg-8">
+                            <button type="button" class="btn btn-primary action-find">
+                                <i class="icon-search4 mr-2"></i> {{ __('Cari') }}
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table id="tbl-hari-libur" class="table table-bordered table-hover datatable-show-all">
+            <table id="tbl-hari-libur" class="table datatable-basic table-hover datatable-show-all">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -65,9 +54,10 @@
     </div>
     @include('admin.master_data.modals.forms.hari_libur')
     @include('admin.master_data.modals.forms.hari_libur_bulk')
-@endsection
 
-@section('scripts')
+    <script src="{{ asset('themes/js/plugins/notifications/pnotify.min.js') }}"></script>
+    <script src="{{ asset('themes/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+    <script src="{{ asset('themes/js/main/axios.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/additional_methods.min.js') }}"></script>
@@ -105,7 +95,7 @@
                 buttons: [
                     {
                         text: '<i class="icon-file-plus" data-popup="tooltip" title="Tambah Data"></i>',
-                        className: 'btn btn-light action-create',
+                        className: 'btn btn-default action-create',
                         action: function (e, dt, node, config) {
                             $('.modal-title').html('Tambah Hari Libur');
                             $('#modal_hari_libur_bulk form').trigger('reset');
@@ -117,7 +107,7 @@
                     },
                     {
                         text: '<i class="icon-loop3" data-popup="tooltip" title="Refresh"></i>',
-                        className: 'btn btn-light action-refresh',
+                        className: 'btn btn-default action-refresh',
                         action: function(e, dt, node, config) {
                             $('.action-find').click();
                         }
@@ -125,7 +115,7 @@
                     {
                         extend: 'excelHtml5',
                         text: '<i class="icon-file-excel" data-popup="tooltip" title="Export to Excel"></i>',
-                        className: 'btn btn-light',
+                        className: 'btn btn-default',
                         exportOptions: {
                             columns: ':visible'
                         }
@@ -133,7 +123,7 @@
                     {
                         extend: 'pdfHtml5',
                         text: '<i class="icon-file-pdf" data-popup="tooltip" title="Export to PDF"></i>',
-                        className: 'btn btn-light',
+                        className: 'btn btn-default',
                         exportOptions: {
                             columns: ':visible'
                         }

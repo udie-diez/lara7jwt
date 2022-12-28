@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+form input{
+	user-select: none;
+}
+select{
+	pointer-events:none;
+}
+select[readonly].select2-hidden-accessible + .select2-container {
+        pointer-events: none;
+        touch-action: none;
+    }
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection__arrow, select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
+        display: none;
+    }
+
+.table td,
+    .table th {
+        padding: 0.55rem 0.2rem;
+    }
+    .dataTable thead .sorting:after, .dataTable thead .sorting:before{
+        right: 0.25rem;
+    }

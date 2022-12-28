@@ -17,7 +17,14 @@ class HariLiburController extends Controller
      */
     public function index()
     {
-        return view('admin.master_data.hari_libur');
+        $tag = [
+            'menu' => 'Master Data',
+            'submenu' => 'Hari Libur',
+            'judul' => 'HARI LIBUR',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.master_data.hari_libur', ['tag' => $tag]);
     }
 
     /**
@@ -32,6 +39,7 @@ class HariLiburController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/holiday/byRange');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -104,6 +112,7 @@ class HariLiburController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/holiday/add');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -140,6 +149,7 @@ class HariLiburController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/holiday/byDate");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -193,6 +203,7 @@ class HariLiburController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/holiday/update');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -229,6 +240,7 @@ class HariLiburController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/holiday/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

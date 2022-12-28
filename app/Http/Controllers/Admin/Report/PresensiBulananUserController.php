@@ -14,7 +14,14 @@ class PresensiBulananUserController extends Controller
 {
     public function index()
     {
-        return view('admin.report.presensiBulanan');
+        $tag = [
+            'menu' => 'Laporan',
+            'submenu' => 'Presensi Bulanan',
+            'judul' => 'PRESENSI BULANAN',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.report.presensiBulanan', ['tag' => $tag]);
     }
 
     public function list(Request $request)
@@ -47,6 +54,7 @@ class PresensiBulananUserController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/absen");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

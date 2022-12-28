@@ -1,131 +1,119 @@
-@extends('layouts.app')
+@extends('layouts.home')
 
-@section('header_title')
-    <span class="font-weight-semibold">{{ __('Home') }}</span> - {{ __('Dashboard') }}
-@endsection
+@section('maincontent')
+    <div class="card">
 
-@section('breadcrumb')
-    <div class="breadcrumb">
-        <a href="{{ route('dashboard') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> {{ __('Home') }}</a>
-        <span class="breadcrumb-item active">{{ __('Dashboard') }}</span>
-    </div>
-@endsection
-
-@section('content')
-    <div class="content">
-        <div class="card">
-
-            <div class="card-header header-elements-inline">
-                <h6 class="card-title">{{ __('Daftar Anggota') }}</h6>
-                <div class="header-elements">
-                    <button type="button" class="btn btn-outline-primary action-create">
-                        <i class="icon-plus3 mr-2"></i> {{ __('Anggota') }}
-                    </button>
-                </div>
+        <div class="card-header header-elements-inline">
+            <h6 class="card-title">{{ __('Daftar Anggota') }}</h6>
+            <div class="header-elements">
+                <button type="button" class="btn btn-outline-primary action-create">
+                    <i class="icon-plus3 mr-2"></i> {{ __('Anggota') }}
+                </button>
             </div>
-
-            <div class="card-body py-0">
-                <div class="row">
-                    @php $anggotaAktif = 0; $anggotaTidakAktif = 0; $anggotaKeluar = 0; $count = $count ?? 0; @endphp
-                    @foreach ($anggota as $user)
-                        @switch($user->status)
-                            @case('aktif')
-                                @php $anggotaAktif = $user->total @endphp
-                                @break
-                            @case('tidak')
-                                @php $anggotaTidakAktif = $user->total @endphp
-                                @break
-                            @case('keluar')
-                                @php $anggotaKeluar = $user->total @endphp
-                                @break
-                        @endswitch
-                    @endforeach
-                    <div class="col-xl-3 col-md-6 anggota-aktif">
-                        <div class="card card-body bg-info">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h1 class="media-title font-weight-semibold">{{ $anggotaAktif }}</h1>
-                                    <span>{{ __('AKTIF') }} <i class="icon-circle-right2 ml-2"></i></span>
-                                </div>
-
-                                <div class="mt-2 ml-3">
-                                    <i class="icon-user-check icon-3x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 anggota-tidak">
-                        <div class="card card-body bg-warning">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h1 class="media-title font-weight-semibold">{{ $anggotaTidakAktif }}</h1>
-                                    <span>{{ __('NON AKTIF') }} <i class="icon-circle-right2 ml-2"></i></span>
-                                </div>
-
-                                <div class="mt-2 ml-3">
-                                    <i class="icon-user-block icon-3x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 anggota-keluar">
-                        <div class="card card-body bg-danger">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h1 class="media-title font-weight-semibold">{{ $anggotaKeluar }}</h1>
-                                    <span>{{ __('KELUAR') }} <i class="icon-circle-right2 ml-2"></i></span>
-                                </div>
-
-                                <div class="mt-2 ml-3">
-                                    <i class="icon-user-block icon-3x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 anggota-jumlah">
-                        <div class="card card-body bg-success">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h1 class="media-title font-weight-semibold">{{ $count }}</h1>
-                                    <span>{{ __('JUMLAH') }} <i class="icon-circle-right2 ml-2"></i></span>
-                                </div>
-
-                                <div class="mt-2 ml-3">
-                                    <i class="icon-users4 icon-3x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <table id="tbl-anggota" class="table table-bordered table-hover datatable-show-all">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>{{ __('Kode') }}</th>
-                        <th>{{ __('Nama') }}</th>
-                        <th>{{ __('Email') }}</th>
-                        <th>{{ __('Jabatan') }}</th>
-                        <th>{{ __('Role') }}</th>
-                        <th>{{ __('Status') }}</th>
-                        <th>{{ __('Created at') }}</th>
-                        <th>{{ __('Updated at') }}</th>
-                        <th class="text-center">{{ __('Aksi') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
+
+        <div class="card-body py-0">
+            <div class="row">
+                @php $anggotaAktif = 0; $anggotaTidakAktif = 0; $anggotaKeluar = 0; $count = $count ?? 0; @endphp
+                @foreach ($anggota as $user)
+                    @switch($user->status)
+                        @case('aktif')
+                            @php $anggotaAktif = $user->total @endphp
+                            @break
+                        @case('tidak')
+                            @php $anggotaTidakAktif = $user->total @endphp
+                            @break
+                        @case('keluar')
+                            @php $anggotaKeluar = $user->total @endphp
+                            @break
+                    @endswitch
+                @endforeach
+                <div class="col-xl-3 col-md-6 anggota-aktif">
+                    <div class="card card-body bg-info">
+                        <div class="media">
+                            <div class="media-body">
+                                <h1 class="media-title font-weight-semibold">{{ $anggotaAktif }}</h1>
+                                <span>{{ __('AKTIF') }} <i class="icon-circle-right2 ml-2"></i></span>
+                            </div>
+
+                            <div class="mt-2 ml-3">
+                                <i class="icon-user-check icon-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 anggota-tidak">
+                    <div class="card card-body bg-warning">
+                        <div class="media">
+                            <div class="media-body">
+                                <h1 class="media-title font-weight-semibold">{{ $anggotaTidakAktif }}</h1>
+                                <span>{{ __('NON AKTIF') }} <i class="icon-circle-right2 ml-2"></i></span>
+                            </div>
+
+                            <div class="mt-2 ml-3">
+                                <i class="icon-user-block icon-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 anggota-keluar">
+                    <div class="card card-body bg-danger">
+                        <div class="media">
+                            <div class="media-body">
+                                <h1 class="media-title font-weight-semibold">{{ $anggotaKeluar }}</h1>
+                                <span>{{ __('KELUAR') }} <i class="icon-circle-right2 ml-2"></i></span>
+                            </div>
+
+                            <div class="mt-2 ml-3">
+                                <i class="icon-user-block icon-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 anggota-jumlah">
+                    <div class="card card-body bg-success">
+                        <div class="media">
+                            <div class="media-body">
+                                <h1 class="media-title font-weight-semibold">{{ $count }}</h1>
+                                <span>{{ __('JUMLAH') }} <i class="icon-circle-right2 ml-2"></i></span>
+                            </div>
+
+                            <div class="mt-2 ml-3">
+                                <i class="icon-users4 icon-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table id="tbl-anggota" class="table datatable-basic table-hover datatable-show-all">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ __('Kode') }}</th>
+                    <th>{{ __('Nama') }}</th>
+                    <th>{{ __('Email') }}</th>
+                    <th>{{ __('Jabatan') }}</th>
+                    <th>{{ __('Role') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th>{{ __('Created at') }}</th>
+                    <th>{{ __('Updated at') }}</th>
+                    <th class="text-center">{{ __('Aksi') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
     @include('admin.master_data.modals.forms.anggota')
-@endsection
 
-@section('scripts')
+    <script src="{{ asset('themes/js/plugins/notifications/pnotify.min.js') }}"></script>
+    <script src="{{ asset('themes/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+    <script src="{{ asset('themes/js/main/axios.min.js') }}"></script>
 	<script src="{{ asset('themes/js/plugins/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/validate.min.js') }}"></script>
     <script src="{{ asset('themes/js/plugins/forms/validation/localization/messages_id.js') }}"></script>
@@ -277,7 +265,7 @@
                 buttons: [
                     {
                         text: '<i class="icon-loop3" data-popup="tooltip" title="Refresh"></i>',
-                        className: 'btn btn-light action-refresh',
+                        className: 'btn btn-default action-refresh',
                         action: function(e, dt, node, config) {
                             dt.ajax.reload(null, false);
                         }
@@ -285,7 +273,7 @@
                     {
                         extend: 'excelHtml5',
                         text: '<i class="icon-file-excel" data-popup="tooltip" title="Export to Excel"></i>',
-                        className: 'btn btn-light',
+                        className: 'btn btn-default',
                         exportOptions: {
                             columns: ':visible'
                         }
@@ -293,7 +281,7 @@
                     {
                         extend: 'pdfHtml5',
                         text: '<i class="icon-file-pdf" data-popup="tooltip" title="Export to PDF"></i>',
-                        className: 'btn btn-light',
+                        className: 'btn btn-default',
                         exportOptions: {
                             columns: ':visible'
                         }

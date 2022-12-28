@@ -10,11 +10,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('jwt.verify', ['except' => ['index']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +17,13 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard', ['count' => 0, 'anggota' => []]);
+        $tag = [
+            'menu' => 'Home',
+            'submenu' => 'Dashboard',
+            'menuurl' => '',
+            'modal' => 'false'
+        ];
+        return view('admin.dashboard', ['count' => 0, 'anggota' => [], 'tag' => $tag]);
     }
 
     public function counter()
@@ -42,6 +43,7 @@ class DashboardController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/user');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -117,6 +119,7 @@ class DashboardController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/user');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('POST', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -153,6 +156,7 @@ class DashboardController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/user/{$id}");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('GET', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -205,6 +209,7 @@ class DashboardController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . '/user/update');
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('PUT', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),
@@ -241,6 +246,7 @@ class DashboardController extends Controller
             $url = URL::to(env('API_URL', 'https://api-presensi.chegspro.com') . "/user/{$id}/delete");
             $client = new \GuzzleHttp\Client();
             $reqClient = $client->request('DELETE', $url, [
+                'allow_redirects' => true,
                 'headers' => [
                     'Authorization' => 'Bearer ' . session('accessToken'),
                     'appSecret' => env('API_SECRET', '!FKU!oc@fL,.WNX4_V5JgX!Kf'),

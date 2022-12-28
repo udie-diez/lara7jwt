@@ -14,13 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-Route::any('{any}', function () {
-    return response()->json([
-        'status' => 'error',
-        'message' => 'Resource not found'
-    ], 404);
-})->where('any', '.*');
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
